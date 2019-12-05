@@ -1,0 +1,14 @@
+C:\Users\adamw\Source\Repos\zuza3012\Ha\bin\Debug\Ha.exe.config
+C:\Users\adamw\Source\Repos\zuza3012\Ha\bin\Debug\Ha.exe
+C:\Users\adamw\Source\Repos\zuza3012\Ha\bin\Debug\Ha.pdb
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.csprojAssemblyReference.cache
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\MainWindow.g.cs
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\App.g.cs
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha_MarkupCompile.cache
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha_MarkupCompile.lref
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\MainWindow.baml
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.g.resources
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.Properties.Resources.resources
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.csproj.GenerateResource.cache
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.exe
+C:\Users\adamw\Source\Repos\zuza3012\Ha\obj\Debug\Ha.pdb
