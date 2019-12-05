@@ -14,8 +14,8 @@ namespace Ha {
             InitializeComponent();
         }
         int rows, cols, step;
-
         double offsetX, offsetY;
+
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
             Application.Current.Shutdown();
@@ -29,20 +29,20 @@ namespace Ha {
             cols = Convert.ToInt32(colTb.Text);
 
 
-            if (canvas.ActualWidth / cols < canvas.ActualHeight / rows) {
-                if (((int)canvas.ActualWidth / cols) % 2 == 0) {
-                    step = (int)canvas.ActualWidth / cols;
+            if (canvas.Width / cols < canvas.ActualHeight / rows) {
+                if ((int)canvas.Width / cols % 2 == 0) {
+                    step = (int)canvas.Width / cols;
                 } else {
-                    step = (int)canvas.ActualWidth / cols - 1;
+                    step = (int)canvas.Width / cols - 1;
                 }
             } else {
-                if (((int)canvas.ActualHeight / rows) % 2 == 0) {
-                    step = (int)canvas.ActualHeight / rows;
+                if ((int)canvas.Height / rows % 2 == 0) {
+                    step = (int)canvas.Height / rows;
                 } else {
-                    step = (int)canvas.ActualHeight / rows - 1;
+                    step = (int)canvas.Height / rows - 1;
                 }
             }
-        
+
             offsetX = (canvas.Width - step * cols) / 2;
             offsetY = (canvas.Height - step * rows) / 2;
 
@@ -52,11 +52,11 @@ namespace Ha {
 
                     X1 = i * step + offsetX,
                     Y1 = 0 + offsetY,
-
+                    
                     X2 = i * step + offsetX,
                     Y2 = rows * step + offsetY
                 };
-
+                Console.WriteLine("("+lineX.X1+","+lineX.Y1+")");
                 canvas.Children.Add(lineX);
 
             }
@@ -80,15 +80,19 @@ namespace Ha {
         private void DrawRect(object sender, MouseButtonEventArgs e) {
 
             Point startPoint = e.GetPosition(canvas);
-            if (startPoint.X > offsetX && startPoint.X < canvas.Width - offsetX &&
-                startPoint.Y > offsetY && startPoint.Y < canvas.Height - offsetY) {
+            if (startPoint.X > offsetX && startPoint.X < cols * step + offsetX &&
+                startPoint.Y > offsetY && startPoint.Y < rows * step + offsetY) {
+
+                Console.WriteLine((int)(startPoint.X) / step * step+offsetX);
+                Console.WriteLine((int)(startPoint.Y) / step * step+offsetY);
+
                 Rectangle rect = new Rectangle {
                     Fill = Brushes.Black,
                     Height = step,
                     Width = step
                 };
-                Canvas.SetLeft(rect, (int)startPoint.X / step * step);
-                Canvas.SetTop(rect, (int)startPoint.Y / step * step);
+                Canvas.SetLeft(rect, (int)(startPoint.X) / step * step+offsetX);
+                Canvas.SetTop(rect, (int)(startPoint.Y) / step * step+offsetY);
                 canvas.Children.Add(rect);
             }
         }
