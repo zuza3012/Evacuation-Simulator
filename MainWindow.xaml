@@ -15,6 +15,9 @@
             <Label  Margin="30,3,30,3" Content="Column:"/>
             <TextBox x:Name="colTb" Margin="30,3,30,3" Height="23" TextWrapping="Wrap" Text="" Width="60"/>
             <Button x:Name="drawBtn" Margin="30,3,30,3" Content="Draw" Width="60" Click="Draw"/>
+            <RadioButton Margin="30,3,30,3" x:Name="obst" Content="Add an obstacle" Click="checkObst" IsChecked="True"/>
+            <RadioButton Margin="30,3,30,3" x:Name="door" Content="Add door" Click="checkDoor" IsChecked="False"/>
+            <RadioButton Margin="30,3,30,3" x:Name="people" Content="Add people" Click="checkPeople" IsChecked="False"/>
 
         </WrapPanel>
 
