@@ -91,6 +91,63 @@ namespace Ha {
 
                 canvas.Children.Add(lineY);
             }
+
+            Rectangle rect = new Rectangle();
+
+            for (int j = 0; j < rows - 1; j++) {
+                rect = new Rectangle {
+                    Width = step - 4,
+                    Height = step - 4,
+                    Fill = Brushes.DarkGray
+                };
+                Canvas.SetTop(rect, offsetY + j * step + 2);
+                Canvas.SetLeft(rect, offsetX + 2);
+                canvas.Children.Add(rect);
+
+
+                rect = new Rectangle {
+                    Width = step - 4,
+                    Height = step - 4,
+                    Fill = Brushes.DarkGray
+                };
+                Canvas.SetTop(rect, offsetY + j * step + 2);
+                Canvas.SetLeft(rect, offsetX + (cols-1) * step + 2);
+                canvas.Children.Add(rect);
+            }
+
+
+            for (int k = 0; k < cols - 1; k++) {
+                rect = new Rectangle {
+                    Width = step - 4,
+                    Height = step - 4,
+                    Fill = Brushes.DarkGray
+                };
+                Canvas.SetTop(rect, offsetY + 2);
+                Canvas.SetLeft(rect, offsetX + k * step + 2);
+                canvas.Children.Add(rect);
+
+
+                rect = new Rectangle {
+                    Width = step - 4,
+                    Height = step - 4,
+                    Fill = Brushes.DarkGray
+                };
+                Canvas.SetTop(rect, offsetY + (rows-1) * step + 2);
+                Canvas.SetLeft(rect, offsetX + k * step + 2);
+                canvas.Children.Add(rect);
+            }
+
+            rect = new Rectangle {
+                Width = step - 4,
+                Height = step - 4,
+                Fill = Brushes.DarkGray
+            };
+
+            Canvas.SetTop(rect, offsetY + (rows - 1) * step + 2);
+            Canvas.SetLeft(rect, offsetX + (cols - 1) * step + 2);
+            canvas.Children.Add(rect);
+
+
         }
 
         private void DrawRect(object sender, MouseButtonEventArgs e) {
@@ -153,9 +210,12 @@ namespace Ha {
                     canvas.Children.Add(ellipse);
                 }
             }
-            if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + cols * step) 
+            if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + cols * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
                 startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) {
+
+
+
 
                 if (door.IsChecked == true) {
                     rect.Fill = Brushes.Red;
