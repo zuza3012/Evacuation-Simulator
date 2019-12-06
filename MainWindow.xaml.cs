@@ -22,7 +22,6 @@ namespace Ha {
             Console.WriteLine("Application has been closed");
         }
 
-
         private void Draw(object sender, RoutedEventArgs e) {
             canvas.Children.Clear();
 
