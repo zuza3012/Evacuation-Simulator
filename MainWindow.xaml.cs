@@ -37,6 +37,7 @@ namespace Ha {
             offsetX = (canvas.Width - step * cols) / 2;
             offsetY = (canvas.Height - step * rows) / 2;
 
+
             for (int i = 0; i < cols + 1; i++) {
                 Line lineX = new Line {
                     Stroke = Brushes.Black,
