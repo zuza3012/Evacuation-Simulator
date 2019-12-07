@@ -167,15 +167,15 @@ namespace Ha {
 
                 if (obst.IsChecked == true) {
                     rect.Fill = Brushes.DarkGray;
-                    if (cells[c][r].isAWall) {          //jesli juz jest sciana, to czysci sciane i wstawia bialy kwadracik, zeby bylo ladnie
+                    if (cells[c][r].isAWall) {          //jesli juz jest sciana, to czysci sciane
                         cells[c][r].isAWall = false;
                         rect.Width = step - 2;
                         rect.Height = step - 2;
                         rect.Fill = Brushes.White;
                         Canvas.SetLeft(rect, c * step + offsetX + 1);
                         Canvas.SetTop(rect, r * step + offsetY + 1);
-                    } else {                            //jesli jeszcze nie jest sciana, to juz jest i wstawia szary kwadracik, zeby bylo ladnie
-                        cells[c][r].isAWall = true;
+                    } else {                            //jesli jeszcze nie jest sciana, to czysci ewentualnego ludzika i wstawia sciane
+                        cells[c][r].isAPerson = false;
                         rect.Width = step - 4;
                         rect.Height = step - 4;
                         rect.Fill = Brushes.DarkGray;
@@ -186,7 +186,7 @@ namespace Ha {
 
                 } else if (people.IsChecked == true) {
                     Ellipse ellipse = new Ellipse();
-                    if (cells[c][r].isAPerson) {        //jesli jest juz ludzik, to zabija go i wstawia bialy kwadracik, zeby bylo ladnie
+                    if (cells[c][r].isAPerson) {        //jesli jest juz ludzik, to zabija go
                         cells[c][r].isAPerson = false;
                         rect.Width = step - 2;
                         rect.Height = step - 2;
@@ -194,12 +194,19 @@ namespace Ha {
                         Canvas.SetLeft(rect, c * step + offsetX + 1);
                         Canvas.SetTop(rect, r * step + offsetY + 1);
                         canvas.Children.Add(rect);
-                    } else {                            //jesli jeszcze nie ma ludzika, to juz jest i wstawia czarne koleczko, zeby bylo ladnie
+                    } else {                            //jesli jeszcze nie ma ludzika to czysci ewentualna sciane i wstawia ludzika
                         cells[c][r].isAPerson = true;
+                        cells[c][r].isAWall = false;
                         ellipse.Width = step - 4;
                         ellipse.Height = step - 4;
                         ellipse.Stroke = Brushes.Black;
                         ellipse.StrokeThickness = 2;
+                        rect.Width = step - 2;
+                        rect.Height = step - 2;
+                        rect.Fill = Brushes.White;
+                        Canvas.SetLeft(rect, c * step + offsetX + 1);
+                        Canvas.SetTop(rect, r * step + offsetY + 1);
+                        canvas.Children.Add(rect);
                         Canvas.SetLeft(ellipse, c * step + offsetX + 2);
                         Canvas.SetTop(ellipse, r * step + offsetY + 2);
                         canvas.Children.Add(ellipse);
@@ -212,7 +219,7 @@ namespace Ha {
 
                 if (door.IsChecked == true) {
                     rect.Fill = Brushes.Red;
-                    if (cells[c][r].isADoor) {          //jesli sa juz drzwi, to wywala drzwi, czysci komorke i wstawia sciane, zeby bylo ladnie
+                    if (cells[c][r].isADoor) {          //jesli sa juz drzwi, to wywala drzwi, czysci komorke i wstawia sciane
                         cells[c][r].isADoor = false;
                         cells[c][r].isAWall = true;
                         rect.Width = step - 2;
@@ -228,7 +235,7 @@ namespace Ha {
                         };
                         Canvas.SetLeft(rect, c * step + offsetX + 2);
                         Canvas.SetTop(rect, r * step + offsetY + 2);
-                    } else {                            //jesli nie ma jeszcze drzwi, to wywala sciane, czysci komorke i wstawia drzwi, zeby bylo ladnie
+                    } else {                            //jesli nie ma jeszcze drzwi, to wywala sciane, czysci komorke i wstawia drzwi
                         DrawWalls();                    //natomiast jesli sa juz drzwi to moga byc tylko jedne
                         cells[c][r].isADoor = true;
                         cells[c][r].isAWall = false;
@@ -252,4 +259,3 @@ namespace Ha {
         }
     }
 }
-
