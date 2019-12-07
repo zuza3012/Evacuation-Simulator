@@ -18,17 +18,17 @@ namespace Ha {
         double offsetX, offsetY;
         Cell[][] cells;
 
-        private void checkObst(object sender, RoutedEventArgs e) {
+        private void CheckObst(object sender, RoutedEventArgs e) {
             door.IsChecked = false;
             people.IsChecked = false;
         }
 
-        private void checkDoor(object sender, RoutedEventArgs e) {
+        private void CheckDoor(object sender, RoutedEventArgs e) {
             obst.IsChecked = false;
             people.IsChecked = false;
         }
 
-        private void checkPeople(object sender, RoutedEventArgs e) {
+        private void CheckPeople(object sender, RoutedEventArgs e) {
             door.IsChecked = false;
             obst.IsChecked = false;
         }
@@ -46,25 +46,24 @@ namespace Ha {
             cols = Convert.ToInt32(colTb.Text);
 
 
-            if (canvas.Width / cols < canvas.Height / rows) {
+            if (canvas.Width / cols < canvas.Height / rows) { //nadawanie wartosci stepu
                 step = (int)canvas.Width / cols;
             } else {
                 step = (int)canvas.Height / rows;
             }
-            Console.WriteLine("Step: " + step);
-            offsetX = (canvas.Width - step * cols) / 2;
+            offsetX = (canvas.Width - step * cols) / 2;       //nadawanie wartosci offsetom
             offsetY = (canvas.Height - step * rows) / 2;
 
             cells = new Cell[cols][];
 
-            for (int i = 0; i < cols; i++) {
+            for (int i = 0; i < cols; i++) {        //nadawanie komorkom wartosci x i y
                 cells[i] = new Cell[rows];
                 for (int j = 0; j < rows; j++) {
                     cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step);
                 }
             }
 
-            for (int i = 0; i < cols + 1; i++) {
+            for (int i = 0; i < cols + 1; i++) {    //rysowanie linii pionowych
                 Line lineX = new Line {
                     Stroke = Brushes.Black,
 
@@ -74,11 +73,11 @@ namespace Ha {
                     X2 = i * step + offsetX,
                     Y2 = rows * step + offsetY
                 };
-                Console.WriteLine("(" + lineX.X1 + "," + lineX.Y1 + ")");
+
                 canvas.Children.Add(lineX);
             }
 
-            for (int j = 0; j < rows + 1; j++) {
+            for (int j = 0; j < rows + 1; j++) {    //rysowanie linii poziomych
                 Line lineY = new Line {
                     Stroke = Brushes.Black,
 
@@ -92,9 +91,13 @@ namespace Ha {
                 canvas.Children.Add(lineY);
             }
 
-            Rectangle rect = new Rectangle();
+            DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
+        }
 
-            for (int j = 0; j < rows - 1; j++) {
+        private void DrawWalls() {
+            Rectangle rect = new Rectangle();
+            //wstawianie scian na brzegach
+            for (int j = 0; j < rows; j++) {        //lewy i prawy brzeg
                 rect = new Rectangle {
                     Width = step - 4,
                     Height = step - 4,
@@ -103,7 +106,8 @@ namespace Ha {
                 Canvas.SetTop(rect, offsetY + j * step + 2);
                 Canvas.SetLeft(rect, offsetX + 2);
                 canvas.Children.Add(rect);
-
+                cells[0][j].isADoor = false;
+                cells[0][j].isAWall = true;
 
                 rect = new Rectangle {
                     Width = step - 4,
@@ -111,12 +115,14 @@ namespace Ha {
                     Fill = Brushes.DarkGray
                 };
                 Canvas.SetTop(rect, offsetY + j * step + 2);
-                Canvas.SetLeft(rect, offsetX + (cols-1) * step + 2);
+                Canvas.SetLeft(rect, offsetX + (cols - 1) * step + 2);
                 canvas.Children.Add(rect);
+                cells[cols - 1][j].isADoor = false;
+                cells[cols - 1][j].isAWall = true;
             }
 
 
-            for (int k = 0; k < cols - 1; k++) {
+            for (int k = 0; k < cols; k++) {        //gorny i dolny brzeg
                 rect = new Rectangle {
                     Width = step - 4,
                     Height = step - 4,
@@ -125,32 +131,23 @@ namespace Ha {
                 Canvas.SetTop(rect, offsetY + 2);
                 Canvas.SetLeft(rect, offsetX + k * step + 2);
                 canvas.Children.Add(rect);
-
+                cells[k][0].isADoor = false;
+                cells[k][0].isAWall = true;
 
                 rect = new Rectangle {
                     Width = step - 4,
                     Height = step - 4,
                     Fill = Brushes.DarkGray
                 };
-                Canvas.SetTop(rect, offsetY + (rows-1) * step + 2);
+                Canvas.SetTop(rect, offsetY + (rows - 1) * step + 2);
                 Canvas.SetLeft(rect, offsetX + k * step + 2);
                 canvas.Children.Add(rect);
+                cells[k][rows - 1].isADoor = false;
+                cells[k][rows - 1].isAWall = true;
             }
-
-            rect = new Rectangle {
-                Width = step - 4,
-                Height = step - 4,
-                Fill = Brushes.DarkGray
-            };
-
-            Canvas.SetTop(rect, offsetY + (rows - 1) * step + 2);
-            Canvas.SetLeft(rect, offsetX + (cols - 1) * step + 2);
-            canvas.Children.Add(rect);
-
-
         }
 
-        private void DrawRect(object sender, MouseButtonEventArgs e) {
+        private void DrawRect(object sender, MouseButtonEventArgs e) { //rysowanie obiektu w kwadraciku na ktory sie kliknie
 
             Point startPoint = e.GetPosition(canvas);
 
@@ -166,18 +163,18 @@ namespace Ha {
             Rectangle rect = new Rectangle();
 
             if (startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
-                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step) {
+                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step) { //jesli kliknie sie w wewnetrzne kwadraty
 
                 if (obst.IsChecked == true) {
                     rect.Fill = Brushes.DarkGray;
-                    if (cells[c][r].isAWall) {
+                    if (cells[c][r].isAWall) {          //jesli juz jest sciana, to czysci sciane i wstawia bialy kwadracik, zeby bylo ladnie
                         cells[c][r].isAWall = false;
                         rect.Width = step - 2;
                         rect.Height = step - 2;
                         rect.Fill = Brushes.White;
                         Canvas.SetLeft(rect, c * step + offsetX + 1);
                         Canvas.SetTop(rect, r * step + offsetY + 1);
-                    } else {
+                    } else {                            //jesli jeszcze nie jest sciana, to juz jest i wstawia szary kwadracik, zeby bylo ladnie
                         cells[c][r].isAWall = true;
                         rect.Width = step - 4;
                         rect.Height = step - 4;
@@ -189,15 +186,15 @@ namespace Ha {
 
                 } else if (people.IsChecked == true) {
                     Ellipse ellipse = new Ellipse();
-                    if (cells[c][r].isAPerson) {
+                    if (cells[c][r].isAPerson) {        //jesli jest juz ludzik, to zabija go i wstawia bialy kwadracik, zeby bylo ladnie
                         cells[c][r].isAPerson = false;
-                        ellipse.Width = step - 2;
-                        ellipse.Height = step - 2;
-                        ellipse.Stroke = Brushes.White;
-                        ellipse.StrokeThickness = 4;
-                        Canvas.SetLeft(ellipse, c * step + offsetX + 1);
-                        Canvas.SetTop(ellipse, r * step + offsetY + 1);
-                    } else {
+                        rect.Width = step - 2;
+                        rect.Height = step - 2;
+                        rect.Fill = Brushes.White;
+                        Canvas.SetLeft(rect, c * step + offsetX + 1);
+                        Canvas.SetTop(rect, r * step + offsetY + 1);
+                        canvas.Children.Add(rect);
+                    } else {                            //jesli jeszcze nie ma ludzika, to juz jest i wstawia czarne koleczko, zeby bylo ladnie
                         cells[c][r].isAPerson = true;
                         ellipse.Width = step - 4;
                         ellipse.Height = step - 4;
@@ -205,32 +202,47 @@ namespace Ha {
                         ellipse.StrokeThickness = 2;
                         Canvas.SetLeft(ellipse, c * step + offsetX + 2);
                         Canvas.SetTop(ellipse, r * step + offsetY + 2);
+                        canvas.Children.Add(ellipse);
                     }
-
-                    canvas.Children.Add(ellipse);
                 }
             }
             if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + cols * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
-                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) {
-
-
-
+                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) { //jesli kliknie sie w zewnetrzne kwadraty
 
                 if (door.IsChecked == true) {
                     rect.Fill = Brushes.Red;
-                    if (cells[c][r].isADoor) {
+                    if (cells[c][r].isADoor) {          //jesli sa juz drzwi, to wywala drzwi, czysci komorke i wstawia sciane, zeby bylo ladnie
                         cells[c][r].isADoor = false;
-                        rect.Width = step - 4;
-                        rect.Height = step - 4;
-                        rect.Fill = Brushes.DarkGray;
+                        cells[c][r].isAWall = true;
+                        rect.Width = step - 2;
+                        rect.Height = step - 2;
+                        rect.Fill = Brushes.White;
+                        Canvas.SetLeft(rect, c * step + offsetX + 1);
+                        Canvas.SetTop(rect, r * step + offsetY + 1);
+                        canvas.Children.Add(rect);
+                        rect = new Rectangle {
+                            Width = step - 4,
+                            Height = step - 4,
+                            Fill = Brushes.DarkGray
+                        };
                         Canvas.SetLeft(rect, c * step + offsetX + 2);
                         Canvas.SetTop(rect, r * step + offsetY + 2);
-                    } else {
+                    } else {                            //jesli nie ma jeszcze drzwi, to wywala sciane, czysci komorke i wstawia drzwi, zeby bylo ladnie
+                        DrawWalls();                    //natomiast jesli sa juz drzwi to moga byc tylko jedne
                         cells[c][r].isADoor = true;
-                        rect.Width = step - 4;
-                        rect.Height = step - 4;
-                        rect.Fill = Brushes.Red;
+                        cells[c][r].isAWall = false;
+                        rect.Width = step - 2;
+                        rect.Height = step - 2;
+                        rect.Fill = Brushes.White;
+                        Canvas.SetLeft(rect, c * step + offsetX + 1);
+                        Canvas.SetTop(rect, r * step + offsetY + 1);
+                        canvas.Children.Add(rect);
+                        rect = new Rectangle {
+                            Width = step - 4,
+                            Height = step - 4,
+                            Fill = Brushes.Red
+                        };
                         Canvas.SetLeft(rect, c * step + offsetX + 2);
                         Canvas.SetTop(rect, r * step + offsetY + 2);
                     }
