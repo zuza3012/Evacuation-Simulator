@@ -95,7 +95,7 @@ namespace Ha {
         }
 
         private void DrawWalls() {
-            Rectangle rect = new Rectangle();
+            Rectangle rect;
             //wstawianie scian na brzegach
             for (int j = 0; j < rows; j++) {        //lewy i prawy brzeg
                 rect = new Rectangle {
