@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -39,59 +40,84 @@ namespace Ha {
             Console.WriteLine("Application has been closed");
         }
 
+        private bool CheckConvertion(string name) {
+            int number;
+
+            bool success = Int32.TryParse(name, out number);
+            if (success) {
+                Console.WriteLine("Converted correctly", name, number);
+                return true;
+            } else {
+                Console.WriteLine("Attempted conversion of '{0}' failed.",
+                                    name ?? "<null>");
+                return false;
+
+            }
+        }
+
+        private void SendMeesage(string message, string title) {
+            MessageBox.Show(message, title);
+        }
         private void Draw(object sender, RoutedEventArgs e) {
+
             canvas.Children.Clear();
 
-            rows = Convert.ToInt32(rowTb.Text);
-            cols = Convert.ToInt32(colTb.Text);
+            if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
+                rows = Convert.ToInt32(rowTb.Text);
+                cols = Convert.ToInt32(colTb.Text);
 
-
-            if (canvas.Width / cols < canvas.Height / rows) { //nadawanie wartosci stepu
-                step = (int)canvas.Width / cols;
-            } else {
-                step = (int)canvas.Height / rows;
-            }
-            offsetX = (canvas.Width - step * cols) / 2;       //nadawanie wartosci offsetom
-            offsetY = (canvas.Height - step * rows) / 2;
-
-            cells = new Cell[cols][];
-
-            for (int i = 0; i < cols; i++) {        //nadawanie komorkom wartosci x i y
-                cells[i] = new Cell[rows];
-                for (int j = 0; j < rows; j++) {
-                    cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step);
+                if (canvas.Width / cols < canvas.Height / rows) { //nadawanie wartosci stepu
+                    step = (int)canvas.Width / cols;
+                } else {
+                    step = (int)canvas.Height / rows;
                 }
+
+                offsetX = (canvas.Width - step * cols) / 2;       //nadawanie wartosci offsetom
+                offsetY = (canvas.Height - step * rows) / 2;
+
+                cells = new Cell[cols][];
+
+                for (int i = 0; i < cols; i++) {        //nadawanie komorkom wartosci x i y
+                    cells[i] = new Cell[rows];
+                    for (int j = 0; j < rows; j++) {
+                        cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step);
+                    }
+                }
+
+                for (int i = 0; i < cols + 1; i++) {    //rysowanie linii pionowych
+                    Line lineX = new Line {
+                        Stroke = Brushes.Black,
+
+                        X1 = i * step + offsetX,
+                        Y1 = 0 + offsetY,
+
+                        X2 = i * step + offsetX,
+                        Y2 = rows * step + offsetY
+                    };
+
+                    canvas.Children.Add(lineX);
+                }
+
+                for (int j = 0; j < rows + 1; j++) {    //rysowanie linii poziomych
+                    Line lineY = new Line {
+                        Stroke = Brushes.Black,
+
+                        X1 = 0 + offsetX,
+                        Y1 = j * step + offsetY,
+
+                        X2 = cols * step + offsetX,
+                        Y2 = j * step + offsetY
+                    };
+
+                    canvas.Children.Add(lineY);
+                }
+
+                DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
+
+            } else {
+                SendMeesage("Invalid inputs in rows and columns!", "Error convertion");
             }
 
-            for (int i = 0; i < cols + 1; i++) {    //rysowanie linii pionowych
-                Line lineX = new Line {
-                    Stroke = Brushes.Black,
-
-                    X1 = i * step + offsetX,
-                    Y1 = 0 + offsetY,
-
-                    X2 = i * step + offsetX,
-                    Y2 = rows * step + offsetY
-                };
-
-                canvas.Children.Add(lineX);
-            }
-
-            for (int j = 0; j < rows + 1; j++) {    //rysowanie linii poziomych
-                Line lineY = new Line {
-                    Stroke = Brushes.Black,
-
-                    X1 = 0 + offsetX,
-                    Y1 = j * step + offsetY,
-
-                    X2 = cols * step + offsetX,
-                    Y2 = j * step + offsetY
-                };
-
-                canvas.Children.Add(lineY);
-            }
-
-            DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
         }
 
         private void DrawWalls() {
