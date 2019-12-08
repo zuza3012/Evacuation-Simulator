@@ -55,9 +55,7 @@ namespace Ha {
             }
         }
 
-        private void SendMeesage(string message, string title) {
-            MessageBox.Show(message, title);
-        }
+        
         private void Draw(object sender, RoutedEventArgs e) {
 
             canvas.Children.Clear();
@@ -115,7 +113,7 @@ namespace Ha {
                 DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
 
             } else {
-                SendMeesage("Invalid inputs in rows and columns!", "Error convertion");
+                MessageBox.Show("Invalid inputs in rows and columns!", "Convertion Error");
             }
 
         }
@@ -202,6 +200,7 @@ namespace Ha {
                         Canvas.SetTop(rect, r * step + offsetY + 1);
                     } else {                            //jesli jeszcze nie jest sciana, to czysci ewentualnego ludzika i wstawia sciane
                         cells[c][r].isAPerson = false;
+                        cells[c][r].isAWall = true;
                         rect.Width = step - 4;
                         rect.Height = step - 4;
                         rect.Fill = Brushes.DarkGray;
@@ -239,7 +238,7 @@ namespace Ha {
                     }
                 }
             }
-            if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + cols * step)
+            if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + rows * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
                 startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) { //jesli kliknie sie w zewnetrzne kwadraty
 
