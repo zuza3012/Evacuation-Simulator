@@ -238,6 +238,7 @@ namespace Ha {
                     }
                 }
             }
+
             if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + rows * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
                 startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) { //jesli kliknie sie w zewnetrzne kwadraty
