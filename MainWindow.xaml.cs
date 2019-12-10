@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -243,7 +242,12 @@ namespace Ha {
             }
             if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + rows * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
-                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)) { //jesli kliknie sie w zewnetrzne kwadraty
+                startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)
+                && !((startPoint.X < offsetX + step) && (startPoint.Y < offsetY + step))
+                && !((startPoint.X > offsetX + (cols - 1) * step) && (startPoint.Y < offsetY + step))
+                && !((startPoint.X < offsetX + step) && (startPoint.Y > offsetY + (rows - 1) * step))
+                && !((startPoint.X > offsetX + (cols - 1) * step) && (startPoint.Y > offsetY + (rows - 1) * step))) {
+                //jesli kliknie sie w zewnetrzne kwadraty (bez rogow)
 
                 if (door.IsChecked == true) {
                     rect.Fill = Brushes.Red;

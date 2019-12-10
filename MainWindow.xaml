@@ -21,7 +21,7 @@
 
         </WrapPanel>
 
-        <Canvas x:Name="canvas" Background="White" Width="1014" MouseDown="DrawRect" Margin="2,69,1.6,69.4" >
+        <Canvas x:Name="canvas" Background="White" Width="1014" Height="600"  MouseDown="DrawRect" Margin="2,69,1.6,69.4" >
             <!-- Tu jest cos do canvasu -->
         </Canvas>
         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,674,-0.4,0.4">
