@@ -55,7 +55,10 @@ namespace Ha {
             }
         }
 
-        
+        private void GenerateFloorField(object sender, RoutedEventArgs e) {
+            Cell.GenerateField(cells);
+        }
+
         private void Draw(object sender, RoutedEventArgs e) {
 
             canvas.Children.Clear();
