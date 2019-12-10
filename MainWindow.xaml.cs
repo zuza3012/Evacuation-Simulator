@@ -56,9 +56,41 @@ namespace Ha {
 
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
             Cell.GenerateField(cells);
+
+            
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?" 
+                + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    obst.IsEnabled = false;
+                    door.IsEnabled = false;
+                    people.IsEnabled = false;
+
+                    Label floorValueLabel;
+                    for (int i = 0; i < cols; i++) {
+                        for (int j = 0; j < rows; j++) {
+                            floorValueLabel = new Label {
+                                Content = cells[i][j].floorValue,
+                                Width = step,
+                                Height = step
+                            };
+                            Canvas.SetLeft(floorValueLabel, cells[i][j].x);
+                            Canvas.SetTop(floorValueLabel, cells[i][j].y);
+                            canvas.Children.Add(floorValueLabel);
+                        }
+                    }
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+            
         }
 
         private void Draw(object sender, RoutedEventArgs e) {
+
+            obst.IsEnabled = true;
+            door.IsEnabled = true;
+            people.IsEnabled = true;
 
             canvas.Children.Clear();
 
