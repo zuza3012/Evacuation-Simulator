@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ha {
     class Cell {
-        public double x, y;
+        public double x, y; //floorValue;
         public bool isAWall = false, isAPerson = false, isADoor = false;
 
         public Cell(double x, double y) {
@@ -15,5 +15,11 @@ namespace Ha {
         }
 
         public Cell() { }
+
+        /*internal static void GenerateField(Cell[][] cells) {
+            throw new NotImplementedException();
+        }*/
     }
+
+    
 }
