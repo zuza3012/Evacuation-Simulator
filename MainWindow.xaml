@@ -9,7 +9,7 @@
 
     <Grid>
 
-        <WrapPanel Orientation="Horizontal" DockPanel.Dock="Top">
+        <WrapPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="738" Margin="0,0,-0.4,0" VerticalAlignment="Top">
             <Label Margin="30,3,30,3"  Content="Rows:"/>
             <TextBox x:Name="rowTb" Height="23" TextWrapping="Wrap" Text="" Width="60" RenderTransformOrigin="0.5,0.5"/>
             <Label  Margin="30,3,30,3" Content="Column:"/>
@@ -21,15 +21,13 @@
 
         </WrapPanel>
 
-
-        <Label DockPanel.Dock="Bottom" Background="AliceBlue"
-           Content="Tu coś może być lub nje"
-           VerticalAlignment="Bottom"/>
-
-        <Canvas x:Name="canvas" Background="White" Height="600" Width="1014" MouseDown="DrawRect" >
+        <Canvas x:Name="canvas" Background="White" Width="1014" Height="600"  MouseDown="DrawRect" Margin="2,69,1.6,69.4" >
             <!-- Tu jest cos do canvasu -->
         </Canvas>
+        <WrapPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,674,-0.4,0.4">
+            <Button x:Name="calculate" Margin="30,3,30,3" Content="Create Floor Field" Width="114" Click="GenerateFloorField"/>
 
+        </WrapPanel>
 
     </Grid>
 

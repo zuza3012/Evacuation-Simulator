@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -54,12 +53,43 @@ namespace Ha {
 
             }
         }
-        
+
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
-        //    Cell.GenerateField(cells);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?" 
+                + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
+            switch (result) {
+                case MessageBoxResult.Yes:
+                    Cell.GenerateField(cells);
+
+                    obst.IsEnabled = false;
+                    door.IsEnabled = false;
+                    people.IsEnabled = false;
+
+                    Label floorValueLabel;
+                    for (int i = 0; i < cols; i++) {
+                        for (int j = 0; j < rows; j++) {
+                            floorValueLabel = new Label {
+                                Content = cells[i][j].floorValue,
+                                Width = step,
+                                Height = step
+                            };
+                            Canvas.SetLeft(floorValueLabel, cells[i][j].x);
+                            Canvas.SetTop(floorValueLabel, cells[i][j].y);
+                            canvas.Children.Add(floorValueLabel);
+                        }
+                    }
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
+            
         }
-        
+
         private void Draw(object sender, RoutedEventArgs e) {
+
+            obst.IsEnabled = true;
+            door.IsEnabled = true;
+            people.IsEnabled = true;
 
             canvas.Children.Clear();
 
@@ -82,6 +112,8 @@ namespace Ha {
                     cells[i] = new Cell[rows];
                     for (int j = 0; j < rows; j++) {
                         cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step);
+                        cells[i][j].i = i;
+                        cells[i][j].j = j;
                     }
                 }
 
@@ -244,7 +276,11 @@ namespace Ha {
             if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + rows * step)
                 && !(startPoint.X > offsetX + step && startPoint.X < cols * step + offsetX - step &&
                 startPoint.Y > offsetY + step && startPoint.Y < rows * step + offsetY - step)
-                ) { //jesli kliknie sie w zewnetrzne kwadraty (bez rogow)
+                && !((startPoint.X < offsetX + step) && (startPoint.Y < offsetY + step))
+                && !((startPoint.X > offsetX + (cols - 1) * step) && (startPoint.Y < offsetY + step))
+                && !((startPoint.X < offsetX + step) && (startPoint.Y > offsetY + (rows - 1) * step))
+                && !((startPoint.X > offsetX + (cols - 1) * step) && (startPoint.Y > offsetY + (rows - 1) * step))) {
+                //jesli kliknie sie w zewnetrzne kwadraty (bez rogow)
 
                 if (door.IsChecked == true) {
                     rect.Fill = Brushes.Red;
