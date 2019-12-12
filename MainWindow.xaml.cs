@@ -112,6 +112,8 @@ namespace Ha {
                     cells[i] = new Cell[rows];
                     for (int j = 0; j < rows; j++) {
                         cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step);
+                        cells[i][j].i = i;
+                        cells[i][j].j = j;
                     }
                 }
 
