@@ -12,64 +12,80 @@ namespace Ha {
 
         public Cell() { }
 
-        internal static void checkCells(int i, int j, Cell[][] cells) {
-            if (!cells[i - 1][j].isAWall && !cells[i - 1][j].isADoor) { //sasiad z lewej
-                if (cells[i][j].floorValue + 1 < cells[i - 1][j].floorValue)
-                    cells[i - 1][j].floorValue = cells[i][j].floorValue + 1;
-                Console.WriteLine((cells[i][j].floorValue + 1) + "\t" + (cells[i - 1][j].floorValue));
-            } else {
-                cells[i - 1][j].floorValue = 500;
+        internal static void checkCells(int i, int j, Cell[][] cells, int direction) {
+
+            if (direction != 2) {
+                if (!cells[i - 1][j].isAWall && !cells[i - 1][j].isADoor) { //sasiad z lewej
+                    if (cells[i][j].floorValue + 1 < cells[i - 1][j].floorValue)
+                        cells[i - 1][j].floorValue = cells[i][j].floorValue + 1;
+                    Console.WriteLine((cells[i][j].floorValue + 1) + "\t" + (cells[i - 1][j].floorValue));
+                } else {
+                    cells[i - 1][j].floorValue = 500;
+                }
             }
 
-            if (!cells[i + 1][j].isAWall && !cells[i + 1][j].isADoor) { //sasiad z prawej
-                if (cells[i][j].floorValue + 1 < cells[i + 1][j].floorValue)
-                    cells[i + 1][j].floorValue = cells[i][j].floorValue + 1;
-            } else {
-                cells[i + 1][j].floorValue = 500;
+            if (direction != 3) {
+                if (!cells[i + 1][j].isAWall && !cells[i + 1][j].isADoor) { //sasiad z prawej
+                    if (cells[i][j].floorValue + 1 < cells[i + 1][j].floorValue)
+                        cells[i + 1][j].floorValue = cells[i][j].floorValue + 1;
+                } else {
+                    cells[i + 1][j].floorValue = 500;
+                }
             }
 
-            if (!cells[i][j - 1].isAWall && !cells[i][j - 1].isADoor) { //sasiad z gory
-                if (cells[i][j].floorValue + 1 < cells[i][j - 1].floorValue)
-                    cells[i][j - 1].floorValue = cells[i][j].floorValue + 1;
-            } else {
-                cells[i][j - 1].floorValue = 500;
+            if (direction != 1) {
+                if (!cells[i][j - 1].isAWall && !cells[i][j - 1].isADoor) { //sasiad z gory
+                    if (cells[i][j].floorValue + 1 < cells[i][j - 1].floorValue)
+                        cells[i][j - 1].floorValue = cells[i][j].floorValue + 1;
+                } else {
+                    cells[i][j - 1].floorValue = 500;
+                }
             }
 
-            if (!cells[i - 1][j - 1].isAWall && !cells[i - 1][j - 1].isADoor) { //sasiad z lewej gory
-                if (cells[i][j].floorValue + 1.5 < cells[i - 1][j - 1].floorValue)
-                    cells[i - 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else {
-                cells[i - 1][j - 1].floorValue = 500;
+            if (direction == 0 || direction == 3) {
+                if (!cells[i - 1][j - 1].isAWall && !cells[i - 1][j - 1].isADoor) { //sasiad z lewej gory
+                    if (cells[i][j].floorValue + 1.5 < cells[i - 1][j - 1].floorValue)
+                        cells[i - 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
+                } else {
+                    cells[i - 1][j - 1].floorValue = 500;
+                }
             }
 
-            if (!cells[i + 1][j - 1].isAWall && !cells[i + 1][j - 1].isADoor) { //sasiad z prawej gory
-                if (cells[i][j].floorValue + 1.5 < cells[i + 1][j - 1].floorValue)
-                    cells[i + 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else {
-                cells[i + 1][j - 1].floorValue = 500;
+            if (direction == 0 || direction == 2) {
+                if (!cells[i + 1][j - 1].isAWall && !cells[i + 1][j - 1].isADoor) { //sasiad z prawej gory
+                    if (cells[i][j].floorValue + 1.5 < cells[i + 1][j - 1].floorValue)
+                        cells[i + 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
+                } else {
+                    cells[i + 1][j - 1].floorValue = 500;
+                }
             }
 
-            if (!cells[i + 1][j + 1].isAWall && !cells[i + 1][j + 1].isADoor) { //sasiad z prawego dolu
-                if (cells[i][j].floorValue + 1.5 < cells[i + 1][j + 1].floorValue)
-                    cells[i + 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else {
-                cells[i + 1][j - 1].floorValue = 500;
+            if (direction == 1 || direction == 2) {
+                if (!cells[i + 1][j + 1].isAWall && !cells[i + 1][j + 1].isADoor) { //sasiad z prawego dolu
+                    if (cells[i][j].floorValue + 1.5 < cells[i + 1][j + 1].floorValue)
+                        cells[i + 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
+                } else {
+                    cells[i + 1][j + 1].floorValue = 500;
+                }
             }
 
-            if (!cells[i - 1][j + 1].isAWall && !cells[i - 1][j + 1].isADoor) { //sasiad z lewego dolu
-                if (cells[i][j].floorValue + 1.5 < cells[i + 1][j + 1].floorValue)
-                    cells[i + 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else {
-                cells[i + 1][j - 1].floorValue = 500;
+            if (direction == 1 || direction == 3) {
+                if (!cells[i - 1][j + 1].isAWall && !cells[i - 1][j + 1].isADoor) { //sasiad z lewego dolu
+                    if (cells[i][j].floorValue + 1.5 < cells[i - 1][j + 1].floorValue)
+                        cells[i - 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
+                } else {
+                    cells[i - 1][j + 1].floorValue = 500;
+                }
             }
 
-            if (!cells[i][j + 1].isAWall && !cells[i][j + 1].isADoor) { //sasiad z dolu
-                if (cells[i][j].floorValue + 1 < cells[i][j + 1].floorValue)
-                    cells[i][j + 1].floorValue = cells[i][j].floorValue + 1;
-            } else {
-                cells[i][j + 1].floorValue = 500;
+            if (direction != 0) {
+                if (!cells[i][j + 1].isAWall && !cells[i][j + 1].isADoor) { //sasiad z dolu
+                    if (cells[i][j].floorValue + 1 < cells[i][j + 1].floorValue)
+                        cells[i][j + 1].floorValue = cells[i][j].floorValue + 1;
+                } else {
+                    cells[i][j + 1].floorValue = 500;
+                }
             }
-
         }
 
         internal static void GenerateField(Cell[][] cells) {
@@ -108,32 +124,80 @@ namespace Ha {
                 System.Windows.MessageBox.Show("You didn't put any door here! We are going to die!", "Where is the door?");
             } else {
                 //tu bendzie jagiź algorydm
-                if (jD == rows - 1) {
+                if (jD == rows - 1) {                       //jesli drzwi na dole -> direction = 0
                     cells[iD][jD - 1].floorValue = 1;
                     cells[iD - 1][jD - 1].floorValue = 1.5;
                     cells[iD + 1][jD - 1].floorValue = 1.5;
 
                     for (int j = jD - 1; j > 0; j--) {
                         for (int i = iD; i < cols - 1; i++) { //od drzwi w prawo 
-                            checkCells(i, j, cells);
+                            checkCells(i, j, cells, 0);
                             cells[iD][jD].floorValue = 0;
                         }
 
                         for (int i = iD - 1; i > 0; i--) { //od obok drzwi w lewo
-                            checkCells(i, j, cells);
+                            checkCells(i, j, cells, 0);
                             cells[iD][jD].floorValue = 0;
                         }
-                        //tu cos bendzie
+
+
                     }
                 }
 
+                if (jD == 0) {                       //jesli drzwi na gorze -> direction = 1
+                    cells[iD][1].floorValue = 1;
+                    cells[iD - 1][1].floorValue = 1.5;
+                    cells[iD + 1][1].floorValue = 1.5;
+
+                    for (int j = jD + 1; j < rows - 2; j++) {
+                        for (int i = iD; i < cols - 1; i++) { //od drzwi w prawo 
+                            checkCells(i, j, cells, 1);
+                            cells[iD][jD].floorValue = 0;
+                        }
+
+                        for (int i = iD - 1; i > 0; i--) { //od obok drzwi w lewo
+                            checkCells(i, j, cells, 1);
+                            cells[iD][jD].floorValue = 0;
+                        }
+                    }
+                }
+
+                if (iD == 0) {                       //jesli drzwi po lewej -> direction = 2
+                    cells[1][jD].floorValue = 1;
+                    cells[1][jD + 1].floorValue = 1.5;
+                    cells[1][jD - 1].floorValue = 1.5;
+
+                    for (int i = 1; i < cols - 2; i++) {
+                        for (int j = jD; j > 1; j--) { //od drzwi w gore 
+                            checkCells(i, j, cells, 2);
+                            cells[iD][jD].floorValue = 0;
+                        }
+
+                        for (int j = jD + 1; j <rows - 2; j++) { //od drzwi w dol
+                            checkCells(i, j, cells, 2);
+                            cells[iD][jD].floorValue = 0;
+                        }
+                    }
+                }
+
+                if (iD == cols - 1) {                       //jesli drzwi po prawej -> direction = 3
+                    cells[iD - 1][jD].floorValue = 1;
+                    cells[iD - 1][jD - 1].floorValue = 1.5;
+                    cells[iD - 1][jD + 1].floorValue = 1.5;
+
+                    for (int i = iD - 1; i > 1; i--) {
+                        for (int j = jD; j > 1; j--) { //od drzwi w gore 
+                            checkCells(i, j, cells, 3);
+                            cells[iD][jD].floorValue = 0;
+                        }
+
+                        for (int j = jD + 1; j < rows - 2; j++) { //od drzwi w dol
+                            checkCells(i, j, cells, 3);
+                            cells[iD][jD].floorValue = 0;
+                        }
+                    }
+                }
             }
-
-
-
-
         }
     }
-
-
 }

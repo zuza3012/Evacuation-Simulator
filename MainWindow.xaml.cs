@@ -55,13 +55,12 @@ namespace Ha {
         }
 
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
-            Cell.GenerateField(cells);
-
-            
             MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?" 
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
             switch (result) {
                 case MessageBoxResult.Yes:
+                    Cell.GenerateField(cells);
+
                     obst.IsEnabled = false;
                     door.IsEnabled = false;
                     people.IsEnabled = false;
