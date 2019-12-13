@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -78,12 +78,11 @@ namespace Ha {
                             };
 
                             if (step <= 100) {
-                                floorValueLabel.FontSize = step * 3 / 9;
+                                floorValueLabel.FontSize = step * 3 / 12;
                             } else {
                                 floorValueLabel.FontSize = step * 3 / 16;
                             }
-   
-                            Console.WriteLine(floorValueLabel.FontSize);
+
                             Canvas.SetLeft(floorValueLabel, cells[i][j].x);
                             Canvas.SetTop(floorValueLabel, cells[i][j].y);
                             canvas.Children.Add(floorValueLabel);
@@ -94,6 +93,22 @@ namespace Ha {
                     break;
             }
 
+        }
+
+        private void SaveStaticField(object sender, RoutedEventArgs e) {
+    
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text file (*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == true) {
+                StreamWriter writer = new StreamWriter(saveFileDialog.FileName);
+                for (int j = 0; j < rows; j++) {
+                    for (int i = 0; i < cols; i++) {
+                        writer.Write(cells[i][j].floorValue.ToString() + '\t');
+                    }
+                    writer.Write("\n");
+                }
+                writer.Close();
+            }
         }
 
         private void Draw(object sender, RoutedEventArgs e) {
