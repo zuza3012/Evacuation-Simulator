@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -50,12 +52,12 @@ namespace Ha {
                 Console.WriteLine("Attempted conversion of '{0}' failed.",
                                     name ?? "<null>");
                 return false;
-
             }
         }
 
+
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?" 
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?"
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
             switch (result) {
                 case MessageBoxResult.Yes:
@@ -68,11 +70,20 @@ namespace Ha {
                     Label floorValueLabel;
                     for (int i = 0; i < cols; i++) {
                         for (int j = 0; j < rows; j++) {
+
                             floorValueLabel = new Label {
                                 Content = cells[i][j].floorValue,
                                 Width = step,
                                 Height = step
                             };
+
+                            if (step <= 100) {
+                                floorValueLabel.FontSize = step * 3 / 9;
+                            } else {
+                                floorValueLabel.FontSize = step * 3 / 16;
+                            }
+   
+                            Console.WriteLine(floorValueLabel.FontSize);
                             Canvas.SetLeft(floorValueLabel, cells[i][j].x);
                             Canvas.SetTop(floorValueLabel, cells[i][j].y);
                             canvas.Children.Add(floorValueLabel);
@@ -82,7 +93,7 @@ namespace Ha {
                 case MessageBoxResult.No:
                     break;
             }
-            
+
         }
 
         private void Draw(object sender, RoutedEventArgs e) {
