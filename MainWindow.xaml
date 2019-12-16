@@ -33,6 +33,7 @@
         </Canvas>
         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,674,-0.4,0.4">
             <Button x:Name="calculate" Margin="30,3,30,3" Content="Create Floor Field" Width="114" Click="GenerateFloorField"/>
+            <Button Content="Evacuate Hoomans" Margin="0,3,30,3" Width="114" Click="EvacuateHoomans"/>
 
         </WrapPanel>
 

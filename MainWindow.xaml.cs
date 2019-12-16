@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -126,6 +127,70 @@ namespace Ha {
                             }
                             file2.Write("\n");
                         }
+                    }
+                }
+            }
+        }
+
+        private void EvacuateHoomans(object sender, RoutedEventArgs e) {
+            List<Cell> listOfHoomans = Cell.FindHoomans(cells);
+            Cell evacuateTo;
+            foreach (Cell cell in listOfHoomans) {
+                evacuateTo = Cell.FindNeighbour(cell, cells);       //znajdujemy pozycje gdzie ma sie ewakuowac
+                cells[cell.i][cell.j].isAPerson = false;            //likwidujemy ludzika z miejsca gdzie stal
+                cells[evacuateTo.i][evacuateTo.j].isAPerson = true; //i wstawiamy go tam gdzie ma sie ewakuowac
+            }
+
+            Random rng = new Random();  //szuffle
+            int n = listOfHoomans.Count;
+            while (n > 1) {
+                n--;
+                int k = rng.Next(n + 1);
+                Cell value = listOfHoomans[k];
+                listOfHoomans[k] = listOfHoomans[n];
+                listOfHoomans[n] = value;
+            }
+
+            for (int i = 1; i < cols - 1; i++) {
+                for (int j = 1; j < rows - 1; j++) {
+                    if (!cells[i][j].isAWall) {
+                        Rectangle rect = new Rectangle();
+                        rect.Width = step - 2;
+                        rect.Height = step - 2;
+                        rect.Fill = Brushes.White;
+                        Canvas.SetLeft(rect, i * step + offsetX + 1);
+                        Canvas.SetTop(rect, j * step + offsetY + 1);
+                        canvas.Children.Add(rect);
+                    }
+
+                    Label floorValueLabel;
+
+                    floorValueLabel = new Label {
+                        Content = cells[i][j].floorValue,
+                        Width = step,
+                        Height = step
+                    };
+
+                    if (step <= 100) {
+                        floorValueLabel.FontSize = step * 3 / 12;
+                    } else {
+                        floorValueLabel.FontSize = step * 3 / 16;
+                    }
+
+                    Canvas.SetLeft(floorValueLabel, cells[i][j].x);
+                    Canvas.SetTop(floorValueLabel, cells[i][j].y);
+                    canvas.Children.Add(floorValueLabel);
+
+                    if (cells[i][j].isAPerson) {
+                        Ellipse ellipse = new Ellipse();
+                        ellipse.Width = step - 4;
+                        ellipse.Height = step - 4;
+                        ellipse.Stroke = Brushes.Black;
+                        ellipse.StrokeThickness = 2;
+
+                        Canvas.SetLeft(ellipse, i * step + offsetX + 2);
+                        Canvas.SetTop(ellipse, j * step + offsetY + 2);
+                        canvas.Children.Add(ellipse);
                     }
                 }
             }
