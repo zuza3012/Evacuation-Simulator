@@ -5,6 +5,7 @@ namespace Ha {
         public double x, y, floorValue = 666;
         public bool isAWall = false, isAPerson = false, isADoor = false;
         public int i, j;
+        public int howManyHoomansWereThere = 0;
         public Cell(double x, double y) {
             this.x = x;
             this.y = y;
@@ -42,6 +43,10 @@ namespace Ha {
 
             List<Cell> listOfNearestNeighbours = new List<Cell>();
             foreach(Cell neighbour in listOfNeighbours) {   //szukamy najmniejszej wartosci pola w ogole
+                if (neighbour.isADoor) {
+                    cell.isAPerson = false;
+                    return neighbour;
+                }
                 if(neighbour.floorValue < cell.floorValue && !neighbour.isAPerson) {
                     minimumFloorValue = neighbour.floorValue;
                     nearestNeighbour = neighbour;
@@ -53,12 +58,16 @@ namespace Ha {
                     listOfNearestNeighbours.Add(neighbour);
                 }
             }
+            if (listOfNearestNeighbours.Count == 0)
+                return cell;
+            else {
+                System.Random rand = new System.Random();
+                int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count);    //losujemy komorke jesli jest ich wiecej
+                System.Console.WriteLine("(" + cell.i + ", " + cell.j + ") - " +
+                    "(" + listOfNearestNeighbours[randomNeighbourIndex].i + ", " + listOfNearestNeighbours[randomNeighbourIndex].j + ")");
 
-            System.Random rand = new System.Random();       
-            int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count);    //losujemy komorke jesli jest ich wiecej
-            System.Console.WriteLine("(" + cell.i + ", " + cell.j + ") - " +
-                "(" + listOfNearestNeighbours[randomNeighbourIndex].i + ", " + listOfNearestNeighbours[randomNeighbourIndex].j + ")");
-            return listOfNearestNeighbours[randomNeighbourIndex];
+                return listOfNearestNeighbours[randomNeighbourIndex];
+            }
         }
 
         internal static void checkCells(int i, int j, Cell[][] cells) {
