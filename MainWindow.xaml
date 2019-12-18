@@ -7,10 +7,10 @@
         mc:Ignorable="d"
         Title="Models of Evacuation - Simulator" Height="768" Width="1024" WindowStartupLocation="CenterScreen">
 
-    <Grid>
+    <Grid x:Name="supercalifragilisticexpialidociousGrid">
         <Menu Height="25" Width="1024" VerticalAlignment="Top">
             <MenuItem  Header="File" Margin="2,0,0,0">
-                <MenuItem Header="Save static floor field" Click="SaveStaticField"></MenuItem>
+                <MenuItem x:Name="saveItem" Header="Save simulation data" Click="SaveSimulatedData" IsEnabled="False"></MenuItem>
                 <MenuItem Header="Open file" ></MenuItem>
             </MenuItem>
         
@@ -33,6 +33,7 @@
         </Canvas>
         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,674,-0.4,0.4">
             <Button x:Name="calculate" Margin="30,3,30,3" Content="Create Floor Field" Width="114" Click="GenerateFloorField"/>
+            <Button Content="Evacuate Hoomans" Margin="0,3,30,3" Width="114" Click="EvacuateHoomans"/>
 
         </WrapPanel>
 
