@@ -5,6 +5,7 @@ namespace Ha {
         public double x, y, floorValue = 666;
         public bool isAWall = false, isAPerson = false, isADoor = false;
         public int i, j;
+        public int howManyHoomansWereThere = 0;
         public Cell(double x, double y) {
             this.x = x;
             this.y = y;
@@ -12,17 +13,64 @@ namespace Ha {
 
         public Cell() { }
 
-        internal static void FindHoomans(Cell[][] cells) {
+        internal static List<Cell> FindHoomans(Cell[][] cells) {
             List<Cell> listOfHoomans = new List<Cell>();
             for(int j = 0; j < cells[0].Length; j++){
                 for(int i = 0; i < cells.Length; i++) {
-                    if (cells[i][j].isAPerson) {
+                    if (cells[i][j].isAPerson && !(cells[i][j].floorValue == 0)) {
                         listOfHoomans.Add(cells[i][j]);
-                        System.Console.WriteLine("(" + cells[i][j].i + ", " + cells[i][j].j + ")");
+                        //System.Console.WriteLine("(" + cells[i][j].i + ", " + cells[i][j].j + ")");
                     }
                 }
             }
+            return listOfHoomans;
         }
+
+
+        internal static Cell FindNeighbour(Cell cell, Cell[][] cells) {
+            double minimumFloorValue = 666;
+
+            List<Cell> listOfNeighbours = new List<Cell> {
+                cells[cell.i - 1][cell.j],                  //sasiad z lewej
+                cells[cell.i + 1][cell.j],                  //sasiad z prawej
+                cells[cell.i][cell.j - 1],                  //sasiad z gory
+                cells[cell.i][cell.j + 1],                  //sasiad z dolu
+                cells[cell.i - 1][cell.j - 1],              //sasiad z lewej gory
+                cells[cell.i + 1][cell.j - 1],              //sasiad z prawej gory
+                cells[cell.i - 1][cell.j + 1],              //sasiad z lewego dolu
+                cells[cell.i + 1][cell.j + 1]               //sasiad z prawego dolu
+            };
+
+            List<Cell> listOfNearestNeighbours = new List<Cell>();
+            foreach(Cell neighbour in listOfNeighbours) {   
+                if (neighbour.isADoor) {
+                    cell.isAPerson = false;
+                    return neighbour;
+                }
+
+                if(neighbour.floorValue < cell.floorValue && !neighbour.isAPerson && neighbour.floorValue < minimumFloorValue) {//szukamy najmniejszej wartosci pola w ogole
+                    minimumFloorValue = neighbour.floorValue;
+                    System.Console.WriteLine(minimumFloorValue.ToString() + "kupa");
+                }
+            }
+            System.Console.WriteLine(minimumFloorValue.ToString());
+            foreach (Cell neighbour in listOfNeighbours) {                          //szukamy pola lub pol ktore maja najmniejsza wartosc i nie sa ludziami
+                if(neighbour.floorValue == minimumFloorValue) {
+                    listOfNearestNeighbours.Add(neighbour);
+                }
+            }
+            if (listOfNearestNeighbours.Count == 0)
+                return cell;
+            else {
+                System.Random rand = new System.Random();
+                int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count); //losujemy komorke jesli jest ich wiecej niz 1 (w praktyce wiecej niz 0)
+                System.Console.WriteLine("(" + cell.i + ", " + cell.j + ") - " +
+                    "(" + listOfNearestNeighbours[randomNeighbourIndex].i + ", " + listOfNearestNeighbours[randomNeighbourIndex].j + ")");
+
+                return listOfNearestNeighbours[randomNeighbourIndex];
+            }
+        }
+
         internal static void checkCells(int i, int j, Cell[][] cells) {
 
             if (!cells[i - 1][j].isAWall && !cells[i - 1][j].isADoor) {         //sasiad z lewej
