@@ -136,7 +136,6 @@ namespace Ha {
         }
 
 
-
         private BackgroundWorker evacuationWorker = null;
 
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
@@ -191,11 +190,11 @@ namespace Ha {
                     }
                     buffer += '\n';
                 }
-
-                System.Threading.Thread.Sleep(500);
                 
-                evacuationWorker.ReportProgress(0);
+                evacuationWorker.ReportProgress(1);
+                System.Threading.Thread.Sleep(500);
             }
+            System.Threading.Thread.Sleep(300);
             evacuationWorker.ReportProgress(100);
         }
 

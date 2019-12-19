@@ -29,32 +29,33 @@ namespace Ha {
 
         internal static Cell FindNeighbour(Cell cell, Cell[][] cells) {
             double minimumFloorValue = 666;
-            Cell nearestNeighbour;
 
-            List<Cell> listOfNeighbours = new List<Cell>();
-            listOfNeighbours.Add(cells[cell.i - 1][cell.j]);        //sasiad z lewej
-            listOfNeighbours.Add(cells[cell.i + 1][cell.j]);        //sasiad z prawej
-            listOfNeighbours.Add(cells[cell.i][cell.j - 1]);        //sasiad z gory
-            listOfNeighbours.Add(cells[cell.i][cell.j + 1]);        //sasiad z dolu
-            listOfNeighbours.Add(cells[cell.i - 1][cell.j - 1]);    //sasiad z lewej gory
-            listOfNeighbours.Add(cells[cell.i + 1][cell.j - 1]);    //sasiad z prawej gory
-            listOfNeighbours.Add(cells[cell.i - 1][cell.j + 1]);    //sasiad z lewego dolu
-            listOfNeighbours.Add(cells[cell.i + 1][cell.j + 1]);    //sasiad z prawego dolu
+            List<Cell> listOfNeighbours = new List<Cell> {
+                cells[cell.i - 1][cell.j],                  //sasiad z lewej
+                cells[cell.i + 1][cell.j],                  //sasiad z prawej
+                cells[cell.i][cell.j - 1],                  //sasiad z gory
+                cells[cell.i][cell.j + 1],                  //sasiad z dolu
+                cells[cell.i - 1][cell.j - 1],              //sasiad z lewej gory
+                cells[cell.i + 1][cell.j - 1],              //sasiad z prawej gory
+                cells[cell.i - 1][cell.j + 1],              //sasiad z lewego dolu
+                cells[cell.i + 1][cell.j + 1]               //sasiad z prawego dolu
+            };
 
             List<Cell> listOfNearestNeighbours = new List<Cell>();
-            foreach(Cell neighbour in listOfNeighbours) {   //szukamy najmniejszej wartosci pola w ogole
+            foreach(Cell neighbour in listOfNeighbours) {   
                 if (neighbour.isADoor) {
                     cell.isAPerson = false;
                     return neighbour;
                 }
-                if(neighbour.floorValue < cell.floorValue && !neighbour.isAPerson) {
+
+                if(neighbour.floorValue < cell.floorValue && !neighbour.isAPerson && neighbour.floorValue < minimumFloorValue) {//szukamy najmniejszej wartosci pola w ogole
                     minimumFloorValue = neighbour.floorValue;
-                    nearestNeighbour = neighbour;
+                    System.Console.WriteLine(minimumFloorValue.ToString() + "kupa");
                 }
             }
-
-            foreach (Cell neighbour in listOfNeighbours) {  //szukamy pola lub pol ktore maja najmniejsza wartosc i nie sa ludziami
-                if(minimumFloorValue == neighbour.floorValue && !neighbour.isAPerson) {
+            System.Console.WriteLine(minimumFloorValue.ToString());
+            foreach (Cell neighbour in listOfNeighbours) {                          //szukamy pola lub pol ktore maja najmniejsza wartosc i nie sa ludziami
+                if(neighbour.floorValue == minimumFloorValue) {
                     listOfNearestNeighbours.Add(neighbour);
                 }
             }
@@ -62,7 +63,7 @@ namespace Ha {
                 return cell;
             else {
                 System.Random rand = new System.Random();
-                int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count);    //losujemy komorke jesli jest ich wiecej
+                int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count); //losujemy komorke jesli jest ich wiecej niz 1 (w praktyce wiecej niz 0)
                 System.Console.WriteLine("(" + cell.i + ", " + cell.j + ") - " +
                     "(" + listOfNearestNeighbours[randomNeighbourIndex].i + ", " + listOfNearestNeighbours[randomNeighbourIndex].j + ")");
 
