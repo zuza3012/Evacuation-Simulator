@@ -13,7 +13,9 @@
                 <MenuItem x:Name="saveItem" Header="Save simulation data" Click="SaveSimulatedData" IsEnabled="False"></MenuItem>
                 <MenuItem Header="Open file" ></MenuItem>
             </MenuItem>
-        
+            <MenuItem  Header="Parameters" Margin="2,0,0,0">
+                <MenuItem x:Name="parameterItem" Header="Set parameters" IsEnabled="True" Click="ParametersDialog"></MenuItem>
+            </MenuItem>
         </Menu>
         
         <WrapPanel Orientation="Horizontal"  Height="743" Margin="0,25,-0.4,0" VerticalAlignment="Top">

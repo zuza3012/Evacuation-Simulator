@@ -19,7 +19,7 @@ namespace Ha {
 
         }
         int rows, cols, step;
-        double offsetX, offsetY;
+        double offsetX, offsetY, panicParameter = 0;
         Cell[][] cells;
         String buffer;
 
@@ -162,7 +162,7 @@ namespace Ha {
                 Cell evacuateTo;
                 foreach (Cell cell in listOfHoomans) {
                     cell.howManyHoomansWereThere += 1;
-                    evacuateTo = Cell.FindNeighbour(cell, cells);       //znajdujemy pozycje gdzie ma sie ewakuowac
+                    evacuateTo = Cell.FindNeighbour(cell, cells, panicParameter);       //znajdujemy pozycje gdzie ma sie ewakuowac
                     cells[cell.i][cell.j].isAPerson = false;            //likwidujemy ludzika z miejsca gdzie stal
                     cells[evacuateTo.i][evacuateTo.j].isAPerson = true; //i wstawiamy go tam gdzie ma sie ewakuowac
                 }
@@ -316,6 +316,13 @@ namespace Ha {
             Canvas.SetLeft(floorValueLabel, cells[i][j].x);
             Canvas.SetTop(floorValueLabel, cells[i][j].y);
             canvas.Children.Add(floorValueLabel);
+        }
+
+        private void ParametersDialog(object sender, RoutedEventArgs e) {
+            var dialog = new ParameterWindow();
+            if(dialog.ShowDialog() == true) {
+                panicParameter = Double.Parse(dialog.panicParameterTB.Text);
+            }
         }
 
         private void Draw(object sender, RoutedEventArgs e) {
