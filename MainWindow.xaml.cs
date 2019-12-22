@@ -444,7 +444,7 @@ namespace Ha {
                             cells[c][r].isAWall = true;
 
                         } else {                            //jesli nie ma jeszcze drzwi, to wywala sciane, czysci komorke i wstawia drzwi
-                            DrawWalls();                    //natomiast jesli sa juz drzwi to moga byc tylko jedne
+                            //DrawWalls();                    //natomiast jesli sa juz drzwi to moga byc tylko jedne
                             cells[c][r].isADoor = true;
                             cells[c][r].isAWall = false;
                         }
