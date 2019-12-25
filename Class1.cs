@@ -15,8 +15,8 @@ namespace Ha {
 
         internal static List<Cell> FindHoomans(Cell[][] cells) {
             List<Cell> listOfHoomans = new List<Cell>();
-            for(int j = 0; j < cells[0].Length; j++){
-                for(int i = 0; i < cells.Length; i++) {
+            for (int j = 0; j < cells[0].Length; j++) {
+                for (int i = 0; i < cells.Length; i++) {
                     if (cells[i][j].isAPerson && !(cells[i][j].floorValue == 0)) {
                         listOfHoomans.Add(cells[i][j]);
                         //System.Console.WriteLine("(" + cells[i][j].i + ", " + cells[i][j].j + ")");
@@ -92,7 +92,7 @@ namespace Ha {
             if (!cells[i + 1][j].isAWall && !cells[i + 1][j].isADoor) {         //sasiad z prawej
                 if (cells[i][j].floorValue + 1 < cells[i + 1][j].floorValue)
                     cells[i + 1][j].floorValue = cells[i][j].floorValue + 1;
-            } else if(cells[i + 1][j].isAWall) {
+            } else if (cells[i + 1][j].isAWall) {
                 cells[i + 1][j].floorValue = 500;
             } else {
                 cells[i + 1][j].floorValue = 0;
@@ -101,7 +101,7 @@ namespace Ha {
             if (!cells[i][j - 1].isAWall && !cells[i][j - 1].isADoor) {         //sasiad z gory
                 if (cells[i][j].floorValue + 1 < cells[i][j - 1].floorValue)
                     cells[i][j - 1].floorValue = cells[i][j].floorValue + 1;
-            } else if(cells[i][j - 1].isAWall) {
+            } else if (cells[i][j - 1].isAWall) {
                 cells[i][j - 1].floorValue = 500;
             } else {
                 cells[i][j - 1].floorValue = 0;
@@ -110,7 +110,7 @@ namespace Ha {
             if (!cells[i - 1][j - 1].isAWall && !cells[i - 1][j - 1].isADoor) { //sasiad z lewej gory
                 if (cells[i][j].floorValue + 1.5 < cells[i - 1][j - 1].floorValue)
                     cells[i - 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else if (cells[i - 1][j - 1].isAWall){
+            } else if (cells[i - 1][j - 1].isAWall) {
                 cells[i - 1][j - 1].floorValue = 500;
             } else {
                 cells[i - 1][j - 1].floorValue = 0;
@@ -119,7 +119,7 @@ namespace Ha {
             if (!cells[i + 1][j - 1].isAWall && !cells[i + 1][j - 1].isADoor) { //sasiad z prawej gory
                 if (cells[i][j].floorValue + 1.5 < cells[i + 1][j - 1].floorValue)
                     cells[i + 1][j - 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else if(cells[i + 1][j - 1].isAWall){
+            } else if (cells[i + 1][j - 1].isAWall) {
                 cells[i + 1][j - 1].floorValue = 500;
             } else {
                 cells[i + 1][j - 1].floorValue = 0;
@@ -128,7 +128,7 @@ namespace Ha {
             if (!cells[i + 1][j + 1].isAWall && !cells[i + 1][j + 1].isADoor) { //sasiad z prawego dolu
                 if (cells[i][j].floorValue + 1.5 < cells[i + 1][j + 1].floorValue)
                     cells[i + 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else if (cells[i + 1][j + 1].isAWall){
+            } else if (cells[i + 1][j + 1].isAWall) {
                 cells[i + 1][j + 1].floorValue = 500;
             } else {
                 cells[i + 1][j + 1].floorValue = 0;
@@ -137,7 +137,7 @@ namespace Ha {
             if (!cells[i - 1][j + 1].isAWall && !cells[i - 1][j + 1].isADoor) { //sasiad z lewego dolu
                 if (cells[i][j].floorValue + 1.5 < cells[i - 1][j + 1].floorValue)
                     cells[i - 1][j + 1].floorValue = cells[i][j].floorValue + 1.5;
-            } else if (cells[i - 1][j + 1].isAWall){
+            } else if (cells[i - 1][j + 1].isAWall) {
                 cells[i - 1][j + 1].floorValue = 500;
             } else {
                 cells[i - 1][j + 1].floorValue = 0;
@@ -146,7 +146,7 @@ namespace Ha {
             if (!cells[i][j + 1].isAWall && !cells[i][j + 1].isADoor) {         //sasiad z dolu
                 if (cells[i][j].floorValue + 1 < cells[i][j + 1].floorValue)
                     cells[i][j + 1].floorValue = cells[i][j].floorValue + 1;
-            } else if (cells[i][j + 1].isAWall){
+            } else if (cells[i][j + 1].isAWall) {
                 cells[i][j + 1].floorValue = 500;
             } else {
                 cells[i][j + 1].floorValue = 0;
@@ -164,7 +164,7 @@ namespace Ha {
                         listOfDoors.Add(cells[i][j]);
                     }
 
-            
+
             int iD = 0, jD = 0;              //wspolrzedne drzwi w tablicy cells[][]
 
             for (int i = 0; i < cols; i++) { //szukamy drzwi na gornej i dolnej krawedzi i jednoczesnie ustawiamy wartosc scian
