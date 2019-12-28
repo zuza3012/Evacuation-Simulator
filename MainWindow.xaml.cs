@@ -32,6 +32,7 @@ namespace Ha {
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
         private BackgroundWorker CalcWorker = null;
+        double[][] timeAndPanicArray;
 
 
         private void CheckObst(object sender, RoutedEventArgs e) {
@@ -143,7 +144,7 @@ namespace Ha {
             }
         }
 
-        void EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray) {
+        void EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {
             int counter = 0;
             buffer += "Time:" + counter.ToString() + '\n';
             for (int j = 0; j < rows; j++) {
@@ -204,7 +205,7 @@ namespace Ha {
         }
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
             evacuateStartTime= DateTime.Now;
-            EvacuationCalc(true, cells);
+            EvacuationCalc(true, cells, panicParameter);
            
             Thread.Sleep(sleep2);
             evacuationWorker.ReportProgress(100);
@@ -242,17 +243,38 @@ namespace Ha {
 
         void CalcWorker_DoWork(object sender, DoWorkEventArgs e) {
             int progress = 1;
-            
+            timeAndPanicArray = new double[2][];
+            double[] arrayPanic = new double[numberOfEvacuations];
+            double[] arrayTime = new double[numberOfEvacuations];
+
             for (int i = 1; i < numberOfEvacuations + 1; i++) {
                 evacuateStartTime = DateTime.Now;
-                EvacuationCalc(false, copyCells);
-                System.Threading.Thread.Sleep(sleep + sleep2);
+                EvacuationCalc(false, copyCells, (double) i / (double)numberOfEvacuations);
+                Thread.Sleep(sleep + sleep2);
                 evacuateEndTime = DateTime.Now;
                 time = (evacuateEndTime - evacuateStartTime).TotalSeconds;
                 Console.WriteLine(time);
                 simulationTimeList.Add(time);
                 CalcWorker.ReportProgress(progress * 100 * i /numberOfEvacuations);
+                Console.WriteLine(Convert.ToDouble(i / numberOfEvacuations));
+
+                arrayPanic[i - 1] = (double)i / (double)numberOfEvacuations;
+                arrayTime[i - 1] = time; 
+                
             }
+            timeAndPanicArray[0] = new double[numberOfEvacuations];
+            timeAndPanicArray[1] = new double[numberOfEvacuations];
+
+            timeAndPanicArray[0] = arrayPanic;
+            timeAndPanicArray[1] = arrayTime;
+
+            for (int j = 0; j < timeAndPanicArray[0].Length; j++) {
+                for (int i = 0; i < timeAndPanicArray.Length ; i++) {
+                        Console.Write(timeAndPanicArray[i][j] + "\t");
+                }
+                Console.WriteLine();
+            }
+            
 
             Console.WriteLine("simulationTimeList.Count" + simulationTimeList.Count);
 
