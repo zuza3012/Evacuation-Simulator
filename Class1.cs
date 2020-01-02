@@ -25,7 +25,6 @@ namespace Ha {
                 for (int i = 0; i < cells.Length; i++) {
                     if (cells[i][j].isAPerson && !(cells[i][j].floorValue == 0)) {
                         listOfHoomans.Add(cells[i][j]);
-                        //System.Console.WriteLine("(" + cells[i][j].i + ", " + cells[i][j].j + ")");
                     }
                 }
             }
@@ -60,7 +59,6 @@ namespace Ha {
 
                     if (neighbour.floorValue < cell.floorValue && !neighbour.isAPerson && neighbour.floorValue < minimumFloorValue) {//szukamy najmniejszej wartosci pola w ogole
                         minimumFloorValue = neighbour.floorValue;
-                        System.Console.WriteLine(minimumFloorValue.ToString() + "kupa");
                     }
                 }
                 System.Console.WriteLine(minimumFloorValue.ToString());
@@ -74,8 +72,6 @@ namespace Ha {
                 else {
                     System.Random rand = new System.Random();
                     int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count); //losujemy komorke jesli jest ich wiecej niz 1 (w praktyce wiecej niz 0)
-                    System.Console.WriteLine("(" + cell.i + ", " + cell.j + ") - " +
-                        "(" + listOfNearestNeighbours[randomNeighbourIndex].i + ", " + listOfNearestNeighbours[randomNeighbourIndex].j + ")");
 
                     return listOfNearestNeighbours[randomNeighbourIndex];
                 }
@@ -158,7 +154,7 @@ namespace Ha {
                 cells[i][j + 1].floorValue = 0;
             }
         }
-      
+
         internal static void GenerateField(Cell[][] cells) {
             int cols = cells.Length;
             int rows = cells[0].Length;
@@ -170,63 +166,51 @@ namespace Ha {
                         cells[i][j].floorValue = 500;
                         listOfDoors.Add(cells[i][j]);
                     }
-                } 
+                }
             }
-            List<Cell[][]> listOf2DArray = new List<Cell[][]>();
+            List<Cell[][]> listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor = new List<Cell[][]>();
             int iD = 0, jD = 0;
 
             foreach (Cell door in listOfDoors) {
-                Cell[][] cells_new;
-                cells_new = new Cell[cols][];
+                Cell[][] copyOfCells = new Cell[cols][];
 
                 for (int i = 0; i < cols; i++) {        //stwarzamy tablice 2D 
-                    cells_new[i] = new Cell[rows];
+                    copyOfCells[i] = new Cell[rows];
                     for (int j = 0; j < rows; j++) {
-                        cells_new[i][j] = new Cell(i,j,666); //stworzylam nowy konstruktor Cell() 
+                        copyOfCells[i][j] = new Cell(i, j, 666); //stworzylam nowy konstruktor Cell() 
+                        if (cells[i][j].isAWall)
+                            copyOfCells[i][j].isAWall = true;
                     }
                 }
 
                 for (int i = 0; i < cols; i++) {            //ustawiamy wartosc scian
-                    cells_new[i][0].floorValue = 500;
-                    cells_new[i][0].isAWall = true;
-                    cells_new[i][rows - 1].floorValue = 500;
-                    cells_new[i][rows - 1].isAWall = true;
+                    copyOfCells[i][0].floorValue = 500;
+                    copyOfCells[i][0].isAWall = true;
+                    copyOfCells[i][rows - 1].floorValue = 500;
+                    copyOfCells[i][rows - 1].isAWall = true;
                 }
 
                 for (int j = 0; j < rows; j++) {            // ustawiamy wartosc scian
-                    cells_new[0][j].floorValue = 500;
-                    cells_new[0][j].isAWall = true;
-                    cells_new[cols - 1][j].floorValue = 500;
-                    cells_new[cols - 1][j].isAWall = true;
+                    copyOfCells[0][j].floorValue = 500;
+                    copyOfCells[0][j].isAWall = true;
+                    copyOfCells[cols - 1][j].floorValue = 500;
+                    copyOfCells[cols - 1][j].isAWall = true;
                 }
 
                 jD = door.j;
                 iD = door.i;
-                cells_new[iD][jD].isADoor = true;
-                cells_new[door.i][door.j].floorValue = 0;
-                
-                // sprawdza czy sie dobrze zrobila tablica
-                /*for (int j = 0; j < rows; j++) {
-                    for (int i = 0; i < cols; i++) {
-                        if (cells_new[i][j].isADoor) {
-                            System.Console.Write("Mam tyle dzrwi: " + "(" + cells_new[i][j].i + ", " + cells_new[i][j].j + ")");
-                            System.Console.Write("i wartość pola : " + cells_new[i][j].floorValue);
-                            System.Console.WriteLine();
-                        }
-                        System.Console.Write(cells_new[i][j].floorValue + "\t");
-                    }
-                    System.Console.Write("\n");
-                }*/
+                copyOfCells[iD][jD].isADoor = true;
+                copyOfCells[door.i][door.j].floorValue = 0;
 
-                listOf2DArray.Add(cells_new);
+                listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Add(copyOfCells);
 
             }
- 
-            if (listOf2DArray.Count != 0) {
-                
-                foreach (Cell[][] cells_new in listOf2DArray) {
-                    
-                    int pos = listOf2DArray.IndexOf(cells_new);
+
+            if (listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Count != 0) {
+
+                foreach (Cell[][] copyOfCells in listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor) {
+
+                    int pos = listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.IndexOf(copyOfCells);
                     iD = listOfDoors.ElementAt(pos).i;
                     jD = listOfDoors.ElementAt(pos).j;
                     System.Console.WriteLine("Drzwi:" + "(" + iD + ", " + jD + ")");
@@ -235,98 +219,90 @@ namespace Ha {
                     List<Cell> listOfCells = new List<Cell>();
                     //tu bendzie jagiź algorydm
                     if (jD == rows - 1) {                       //jesli drzwi na dole
-                        cells_new[iD][jD - 1].floorValue = 1;
-                        listOfCells.Add(cells_new[iD][jD - 1]);
+                        copyOfCells[iD][jD - 1].floorValue = 1;
+                        listOfCells.Add(copyOfCells[iD][jD - 1]);
 
-                        if (!cells_new[iD - 1][jD - 1].isAWall && !(cells_new[iD - 1][jD - 1].floorValue < 1.5)) {
-                            cells_new[iD - 1][jD - 1].floorValue = 1.5; 
-                            listOfCells.Add(cells_new[iD - 1][jD - 1]);
-                        } 
+                        if (!copyOfCells[iD - 1][jD - 1].isAWall && !(copyOfCells[iD - 1][jD - 1].floorValue < 1.5)) {
+                            copyOfCells[iD - 1][jD - 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD - 1][jD - 1]);
+                        }
 
-                        if (!cells_new[iD + 1][jD - 1].isAWall && !(cells_new[iD + 1][jD - 1].floorValue < 1.5)) {
-                            cells_new[iD + 1][jD - 1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[iD + 1][jD - 1]);
-                        } 
+                        if (!copyOfCells[iD + 1][jD - 1].isAWall && !(copyOfCells[iD + 1][jD - 1].floorValue < 1.5)) {
+                            copyOfCells[iD + 1][jD - 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD + 1][jD - 1]);
+                        }
 
                     } else if (jD == 0) {                       //jesli drzwi na gorze
-                        cells_new[iD][1].floorValue = 1;
-                        listOfCells.Add(cells_new[iD][1]);
+                        copyOfCells[iD][1].floorValue = 1;
+                        listOfCells.Add(copyOfCells[iD][1]);
 
-                        if (!cells_new[iD - 1][1].isAWall && !(cells_new[iD - 1][1].floorValue < 1.5)) {
-                            cells_new[iD - 1][1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[iD - 1][1]);
-                        } 
-                        if (!cells_new[iD + 1][1].isAWall && !(cells_new[iD + 1][1].floorValue < 1.5)) {
-                            cells_new[iD + 1][1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[iD + 1][1]);
-                        } 
+                        if (!copyOfCells[iD - 1][1].isAWall && !(copyOfCells[iD - 1][1].floorValue < 1.5)) {
+                            copyOfCells[iD - 1][1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD - 1][1]);
+                        }
+                        if (!copyOfCells[iD + 1][1].isAWall && !(copyOfCells[iD + 1][1].floorValue < 1.5)) {
+                            copyOfCells[iD + 1][1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD + 1][1]);
+                        }
                     } else if (iD == 0) {                       //jesli drzwi po lewej 
-                        cells_new[1][jD].floorValue = 1;
-                        listOfCells.Add(cells_new[1][jD]);
+                        copyOfCells[1][jD].floorValue = 1;
+                        listOfCells.Add(copyOfCells[1][jD]);
 
-                        if (!cells_new[1][jD + 1].isAWall && !(cells_new[1][jD + 1].floorValue < 1.5)) {
-                            cells_new[1][jD + 1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[1][jD + 1]);
-                        } 
+                        if (!copyOfCells[1][jD + 1].isAWall && !(copyOfCells[1][jD + 1].floorValue < 1.5)) {
+                            copyOfCells[1][jD + 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[1][jD + 1]);
+                        }
 
-                        if (!cells_new[1][jD - 1].isAWall && !(cells_new[1][jD - 1].floorValue < 1.5)) {
-                            cells_new[1][jD - 1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[1][jD - 1]);
-                        } 
+                        if (!copyOfCells[1][jD - 1].isAWall && !(copyOfCells[1][jD - 1].floorValue < 1.5)) {
+                            copyOfCells[1][jD - 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[1][jD - 1]);
+                        }
                     } else if (iD == cols - 1) {                //jesli drzwi po prawej
-                        cells_new[iD - 1][jD].floorValue = 1;
-                        listOfCells.Add(cells_new[iD - 1][jD]);
+                        copyOfCells[iD - 1][jD].floorValue = 1;
+                        listOfCells.Add(copyOfCells[iD - 1][jD]);
 
-                        if (!cells_new[iD - 1][jD - 1].isAWall && !(cells_new[iD - 1][jD - 1].floorValue < 1.5)) {
-                            cells_new[iD - 1][jD - 1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[iD - 1][jD - 1]);         //Mam Cie cwaniaczku ! (było jD+1)
-                        } 
+                        if (!copyOfCells[iD - 1][jD - 1].isAWall && !(copyOfCells[iD - 1][jD - 1].floorValue < 1.5)) {
+                            copyOfCells[iD - 1][jD - 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD - 1][jD - 1]);
+                        }
 
-                        if (!cells_new[iD - 1][jD + 1].isAWall && !(cells_new[iD - 1][jD + 1].floorValue < 1.5)) {
-                            cells_new[iD - 1][jD + 1].floorValue = 1.5;
-                            listOfCells.Add(cells_new[iD - 1][jD + 1]);         //Mam Cie cwaniaczku! (było jD -1)
-                        } 
+                        if (!copyOfCells[iD - 1][jD + 1].isAWall && !(copyOfCells[iD - 1][jD + 1].floorValue < 1.5)) {
+                            copyOfCells[iD - 1][jD + 1].floorValue = 1.5;
+                            listOfCells.Add(copyOfCells[iD - 1][jD + 1]);
+                        }
                     }
-                    
+
                     while (listOfCells.Count < (rows - 2) * (cols - 2)) {
-                        
+
                         foreach (Cell cell in listOfCells) {
                             if (!cell.isAWall) {
-                                CheckCells(cell.i, cell.j, cells_new);
+                                CheckCells(cell.i, cell.j, copyOfCells);
                             }
-                            System.Console.WriteLine("Sprawdzam:" + "(" + cell.i + ", " + cell.j + ")");
                         }
 
                         for (int i = 1; i < cols - 1; i++)
                             for (int j = 1; j < rows - 1; j++)
-                                if (cells_new[i][j].floorValue != 666 && !listOfCells.Contains(cells_new[i][j])) {
-                                    listOfCells.Add(cells_new[i][j]);
-                                    System.Console.WriteLine("Dodaje te kupy do listy:" + "(" +cells_new[i][j].i + ", " + cells_new[i][j].j + ")");
+                                if (copyOfCells[i][j].floorValue != 666 && !listOfCells.Contains(copyOfCells[i][j])) {
+                                    listOfCells.Add(copyOfCells[i][j]);
                                 }
                     }
-                    cells_new[iD][jD].floorValue = 0;
+                    copyOfCells[iD][jD].floorValue = 0;
                 }
-                int counter = 0;
-                foreach(Cell[][] cells_new_kupa in listOf2DArray) {
- 
+
+                foreach (Cell[][] copyOfCells in listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor) {
+
                     for (int i = 0; i < cols; i++) {
                         for (int j = 0; j < rows; j++) {
-                            if(cells_new_kupa[i][j].floorValue < cells[i][j].floorValue) {
-                                cells[i][j].floorValue = cells_new_kupa[i][j].floorValue;
-                            }
-                            if(counter == 0) {
-                                cells[i][j].floorValue = cells_new_kupa[i][j].floorValue;
+                            if (copyOfCells[i][j].floorValue <= cells[i][j].floorValue) {
+                                cells[i][j].floorValue = copyOfCells[i][j].floorValue;
                             }
                         }
                     }
-                    counter++;
                 }
             } else {
                 System.Windows.MessageBox.Show("You didn't put any door here! We are going to die!", "Where is the door?");
             }
         }
-
-        
     }
 }
 

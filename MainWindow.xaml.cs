@@ -17,22 +17,21 @@ namespace Ha {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+
+        #region Constants & Shit
         public MainWindow() {
             InitializeComponent();
 
         }
         int rows, cols, step;
-        double offsetX, offsetY, panicParameter = 0, time, sum = 0, averageTime = 0;
+        double offsetX, offsetY, panicParameter = 0, averageTime = 0;
         Cell[][] cells, copyCells;
         String buffer;
-        DateTime evacuateStartTime;
-        DateTime evacuateEndTime;
-        int sleep = 500, sleep2 = 300, numberOfEvacuations = 0;
+        int numberOfEvacuations = 0, numberOfIterations = 0;
         List<double> simulationTimeList = new List<double>();
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
-        private BackgroundWorker CalcWorker = null;
-        double[][] timeAndPanicArray;
+        private BackgroundWorker calcWorker = null;
 
 
         private void CheckObst(object sender, RoutedEventArgs e) {
@@ -70,9 +69,23 @@ namespace Ha {
             }
         }
 
+
+        private void ParametersDialog(object sender, RoutedEventArgs e) {
+            var dialog = new ParameterWindow();
+            if (dialog.ShowDialog() == true) {
+                panicParameter = Double.Parse(dialog.panicParameterTB.Text);
+            }
+        }
+
+
+        #endregion
+
+        #region Simulations & Heavy Lifting
+
+        #region Generating Floor Field & Calculating Shit
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
             if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
-
+                evacuateHoomansBtn.IsEnabled = true;
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?"
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
                 switch (result) {
@@ -82,6 +95,9 @@ namespace Ha {
                         obst.IsEnabled = false;
                         door.IsEnabled = false;
                         people.IsEnabled = false;
+                        evacuateHoomansBtn.IsEnabled = true;
+                        doEverythingBtn.IsEnabled = true;
+
 
                         Label floorValueLabel;
                         for (int i = 0; i < cols; i++) {
@@ -146,23 +162,25 @@ namespace Ha {
 
         void EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {
             int counter = 0;
-            buffer += "Time:" + counter.ToString() + '\n';
+            buffer += "Time:" + counter.ToString() + " iterations" + '\n';
             for (int j = 0; j < rows; j++) {
                 for (int i = 0; i < cols; i++) {
                     if (cells[i][j].isAWall)
-                        buffer += "#" + '\t';
+                        buffer += "#";
                     else if (cells[i][j].isAPerson)
-                        buffer += "1" + '\t';
+                        buffer += "1";
                     else if (cells[i][j].isADoor)
-                        buffer += "D" + '\t';
+                        buffer += "D";
                     else
-                        buffer += "0" + '\t';
+                        buffer += "0";
+                    buffer += '\t';
                 }
                 buffer += '\n';
             }
             while (Cell.FindHoomans(cells).Count != 0) {
                 counter++;
-                buffer += "Time:" + counter.ToString() + '\n';
+                numberOfIterations++;
+                buffer += "Time: " + counter.ToString() + " iterations" + '\n';
 
                 List<Cell> listOfHoomans = Cell.FindHoomans(fieldArray);
                 Cell evacuateTo;
@@ -199,21 +217,20 @@ namespace Ha {
 
                 if (doYouWantBackgroundWorker) {
                     evacuationWorker.ReportProgress(1);
+                    Thread.Sleep(500);
                 }
-                 Thread.Sleep(sleep); 
             }
         }
+        #endregion
+
+        #region Workers
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
-            evacuateStartTime= DateTime.Now;
             EvacuationCalc(true, cells, panicParameter);
-           
-            Thread.Sleep(sleep2);
             evacuationWorker.ReportProgress(100);
-            evacuateEndTime = DateTime.Now;
         }
 
         void evacuationWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-            
+            numberOfIterations++;
             for (int i = 1; i < cols - 1; i++) {
                 for (int j = 1; j < rows - 1; j++) {
                     DrawSomething(i, j);
@@ -223,7 +240,7 @@ namespace Ha {
         }
 
         void evacuationWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            MessageBox.Show("Evacuation completed succesfully." + "\n" + "Evacuation time: " + (evacuateEndTime - evacuateStartTime).TotalSeconds + " s", "You are the real hero!");
+            MessageBox.Show("Evacuation completed succesfully." + "\n" + "Evacuation time: " + numberOfIterations + " iterations", "You are the real hero!");
         }
 
         private void EvacuateHoomans(object sender, RoutedEventArgs e) {
@@ -235,68 +252,48 @@ namespace Ha {
                 evacuationWorker.WorkerReportsProgress = true;
                 evacuationWorker.WorkerSupportsCancellation = true;
             }
-            evacuationWorker.RunWorkerAsync();
-            saveItem.IsEnabled = true;
+            if (!evacuationWorker.IsBusy) {
+                numberOfIterations = 0;
+                evacuationWorker.RunWorkerAsync();
+                saveItem.IsEnabled = true;
+            }
         }
 
         // Drugi backgroundWorker do wielu symulacji "w tle" poprzez przycisk DoCrazyCalculations 
 
         void CalcWorker_DoWork(object sender, DoWorkEventArgs e) {
-            int progress = 1;
-            timeAndPanicArray = new double[2][];
-            double[] arrayPanic = new double[numberOfEvacuations];
-            double[] arrayTime = new double[numberOfEvacuations];
 
-            for (int i = 1; i < numberOfEvacuations + 1; i++) {
-                evacuateStartTime = DateTime.Now;
-                EvacuationCalc(false, copyCells, (double) i / (double)numberOfEvacuations);
-                Thread.Sleep(sleep + sleep2);
-                evacuateEndTime = DateTime.Now;
-                time = (evacuateEndTime - evacuateStartTime).TotalSeconds;
-                Console.WriteLine(time);
-                simulationTimeList.Add(time);
-                CalcWorker.ReportProgress(progress * 100 * i /numberOfEvacuations);
-                Console.WriteLine(Convert.ToDouble(i / numberOfEvacuations));
-
-                arrayPanic[i - 1] = (double)i / (double)numberOfEvacuations;
-                arrayTime[i - 1] = time; 
-                
-            }
-            timeAndPanicArray[0] = new double[numberOfEvacuations];
-            timeAndPanicArray[1] = new double[numberOfEvacuations];
-
-            timeAndPanicArray[0] = arrayPanic;
-            timeAndPanicArray[1] = arrayTime;
-
-            for (int j = 0; j < timeAndPanicArray[0].Length; j++) {
-                for (int i = 0; i < timeAndPanicArray.Length ; i++) {
-                        Console.Write(timeAndPanicArray[i][j] + "\t");
-                }
-                Console.WriteLine();
-            }
+            double[][] parameters = new double[2][];
+            parameters[0] = new double[numberOfEvacuations];
+            parameters[1] = new double[numberOfEvacuations];
             
+            for (int i = 0; i < numberOfEvacuations; i++) {
+                copyCells = cells.Select(s => s.ToArray()).ToArray();          // sprawdzalam, dziala ;)
+                EvacuationCalc(false, copyCells, panicParameter);
+                Console.WriteLine("Number of iterations: " + numberOfIterations);
+                calcWorker.ReportProgress(100 * i  / numberOfEvacuations);
 
-            Console.WriteLine("simulationTimeList.Count" + simulationTimeList.Count);
-
-            if (simulationTimeList.Count != 0) {
-                foreach (double item in simulationTimeList) {
-                    sum += item;
-                    Console.WriteLine("Sum: " + sum);
-                }
-                averageTime = sum / simulationTimeList.Count;
+                parameters[0][i] = (double)numberOfIterations;
             }
 
-            Thread.Sleep(sleep2);
-            CalcWorker.ReportProgress(100); 
+            double sum = 0;
+            for (int i = 0; i < numberOfEvacuations; i++) {
+                sum += parameters[0][i];
+                Console.WriteLine(parameters[0][i]);
+            }
+
+            averageTime = sum / numberOfEvacuations;
+            calcWorker.ReportProgress(100);
         }
 
-        void CalcWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {   
-            pop.pgBar.Value = e.ProgressPercentage;  
+        void CalcWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            pop.pgBar.Value = e.ProgressPercentage;
         }
         void CalcWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Close();
-            MessageBox.Show(numberOfEvacuations + " simulations completed! " + "\n"  +  "Average evacuation time: " + averageTime + " s", "You are the real hero!");
+            MessageBox.Show(numberOfEvacuations + " simulations completed! " + "\n" + "Average evacuation time: " + averageTime + " iterations", "You are the real hero!");
         }
+        #endregion
 
         private void MoreCalculations(object sender, RoutedEventArgs e) {
 
@@ -304,19 +301,25 @@ namespace Ha {
             if (dialog.ShowDialog() == true) {
                 numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
                 panicParameter = Double.Parse(dialog.panicParTb.Text);
-                Console.WriteLine(numberOfEvacuations + " " + panicParameter);
             }
-            if (null == CalcWorker) {
-                CalcWorker = new BackgroundWorker();
-                CalcWorker.DoWork += new DoWorkEventHandler(CalcWorker_DoWork);
-                CalcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CalcWorker_RunWorkerCompleted);
-                CalcWorker.ProgressChanged += new ProgressChangedEventHandler(CalcWorker_ProgressChanged);
-                CalcWorker.WorkerReportsProgress = true;
-                CalcWorker.WorkerSupportsCancellation = true;
+            if (null == calcWorker) {
+                calcWorker = new BackgroundWorker();
+                calcWorker.DoWork += new DoWorkEventHandler(CalcWorker_DoWork);
+                calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CalcWorker_RunWorkerCompleted);
+                calcWorker.ProgressChanged += new ProgressChangedEventHandler(CalcWorker_ProgressChanged);
+                calcWorker.WorkerReportsProgress = true;
+                calcWorker.WorkerSupportsCancellation = true;
             }
-            CalcWorker.RunWorkerAsync();
-            pop.Show();
+            if (!calcWorker.IsBusy) {
+                numberOfIterations = 0;
+                calcWorker.RunWorkerAsync();
+                pop.Show();
+            }
         }
+
+        #endregion
+
+        #region Drawing
 
         private void DrawLines() {
             for (int i = 0; i < cols + 1; i++) {    //rysowanie linii pionowych
@@ -412,25 +415,15 @@ namespace Ha {
             canvas.Children.Add(floorValueLabel);
         }
 
-        private void SaveStartField(object sender, RoutedEventArgs e){
-            copyCells =  cells.Select(s => s.ToArray()).ToArray();          // sprawdzalam, dziala ;)
-            MessageBox.Show("You have just made a copy of the field :)","Copy information");
-        }
-
-        private void ParametersDialog(object sender, RoutedEventArgs e) {
-            var dialog = new ParameterWindow();
-            if(dialog.ShowDialog() == true) {
-                panicParameter = Double.Parse(dialog.panicParameterTB.Text);
-                Console.WriteLine(panicParameter);
-            }
-        }
 
         private void Draw(object sender, RoutedEventArgs e) {
 
             obst.IsEnabled = true;
             door.IsEnabled = true;
             people.IsEnabled = true;
-
+            calculate.IsEnabled = true;
+            evacuateHoomansBtn.IsEnabled = false;
+            doEverythingBtn.IsEnabled = false;
             canvas.Children.Clear();
 
             if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
@@ -553,5 +546,6 @@ namespace Ha {
                 }
             }
         }
+        #endregion
     }
 }
