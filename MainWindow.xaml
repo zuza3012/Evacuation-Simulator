@@ -17,16 +17,16 @@
                 <MenuItem x:Name="parameterItem" Header="Set parameters" IsEnabled="True" Click="ParametersDialog"></MenuItem>
             </MenuItem>
         </Menu>
-        
+
         <WrapPanel Orientation="Horizontal"  Height="743" Margin="0,25,-0.4,0" VerticalAlignment="Top">
-            <Label Margin="30,3,30,3"  Content="Rows:"/>
-            <TextBox x:Name="rowTb" Height="23" TextWrapping="Wrap" Text="" Width="60" RenderTransformOrigin="0.5,0.5"/>
-            <Label  Margin="30,3,30,3" Content="Column:"/>
-            <TextBox x:Name="colTb" Margin="30,3,30,3" Height="23" TextWrapping="Wrap" Text="" Width="60"/>
-            <Button x:Name="drawBtn" Margin="30,3,30,3" Content="Draw" Width="60" Click="Draw"/>
-            <RadioButton Margin="30,3,30,3" x:Name="obst" Content="Add an obstacle" Click="CheckObst" IsChecked="True"/>
-            <RadioButton Margin="30,3,30,3" x:Name="door" Content="Add door" Click="CheckDoor" IsChecked="False"/>
-            <RadioButton Margin="30,3,30,3" x:Name="people" Content="Add people" Click="CheckPeople" IsChecked="False"/>
+            <Label Margin="30,3,30,3"  Content="Rows:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBox x:Name="rowTb" Height="23" TextWrapping="Wrap" Text="" Width="60" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Label  Margin="30,3,30,3" Content="Columns:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBox x:Name="colTb" Margin="30,3,30,3" Height="23" TextWrapping="Wrap" Text="" Width="60" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Button x:Name="drawBtn" Margin="30,3,30,3" Content="Draw" Width="60" Click="Draw" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <RadioButton Margin="30,3,30,3" x:Name="obst" Content="Add an obstacle" IsChecked="True" GroupName="Group1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <RadioButton Margin="30,3,30,3" x:Name="door" Content="Add door" IsChecked="False" GroupName="Group1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <RadioButton Margin="30,3,30,3" x:Name="people" Content="Add people" IsChecked="False" GroupName="Group1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         </WrapPanel>
 
@@ -35,9 +35,10 @@
         </Canvas>
         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="10,674,-0.4,0.4">
             <Button x:Name="calculate" Margin="30,3,30,3" Content="Create Floor Field" Width="114" Click="GenerateFloorField" IsEnabled="False"/>
-            <Button x:Name="evacuateHoomansBtn" Content="Evacuate Hoomans" Margin="0,3,30,3" Width="114" Click="EvacuateHoomans" IsEnabled="False"/>
-            <Button x:Name="doEverythingBtn" Content="Do Crazy Calculations" Margin="0,3,30,3" Width="114" Click="MoreCalculations" IsEnabled="False"/>
-           
+            <Button x:Name="evacuateHoomansBtn" Content="Simulate Example Evacuation" Margin="0,3,30,3" Width="162" Click="EvacuateHoomans" IsEnabled="False"/>
+            <Button x:Name="doEverythingBtn" Content="Simulate N Evacuations" Margin="0,3,30,3" Width="130" Click="MoreCalculations" IsEnabled="False"/>
+            <Button x:Name="multiplePanicParametersButton" Content="Generate Some Fancy Graph" Width="157" Margin="0,3,30,3" Click="multiplePanicParametersButton_Click" IsEnabled="False"/>
+
 
         </WrapPanel>
 
