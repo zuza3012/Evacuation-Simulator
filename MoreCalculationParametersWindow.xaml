@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="More Calculations" Height="233.6" Width="269.6">
     <Grid>
-        <TextBox x:Name="numevacTb" HorizontalAlignment="Left" Height="23" Margin="164,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="89"/>
+        <TextBox x:Name="numevacTb" Text="0" HorizontalAlignment="Left" Height="23" Margin="164,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="89"/>
         <Label Content="Number of evacuations:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,37,0,0"/>
         <Label Content="Panic parameter: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="28,81,0,0"/>
         <TextBox x:Name="panicParTb" Text="0" HorizontalAlignment="Left" Height="23" Margin="164,81,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="89" />

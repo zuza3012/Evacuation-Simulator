@@ -43,6 +43,7 @@ namespace Ha {
                 canvas.Children.Add(lineY);
             }
         }
+
         private void DrawSomething(int i, int j) {
 
             Rectangle rect = new Rectangle {
@@ -116,7 +117,7 @@ namespace Ha {
             people.IsEnabled = true;
             calculate.IsEnabled = true;
             evacuateHoomansBtn.IsEnabled = false;
-            doEverythingBtn.IsEnabled = false;
+            evacuateHoomansNTimesBtn.IsEnabled = false;
             multiplePanicParametersButton.IsEnabled = false;
             canvas.Children.Clear();
 

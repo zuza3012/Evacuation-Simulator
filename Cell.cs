@@ -11,13 +11,30 @@ namespace Ha {
             this.x = x;
             this.y = y;
         }
-        public Cell(int i, int j, int floorValue) {
+
+        public Cell(int i, int j, double floorValue) {
             this.i = i;
             this.j = j;
             this.floorValue = floorValue;
         }
 
-        public Cell() { }
+        internal static Cell[][] DeepCopy(Cell[][] cells) {
+            Cell[][] copyCells = new Cell[cells.Length][];
+            for (int ii = 0; ii < cells.Length; ii++) {
+                copyCells[ii] = new Cell[cells[0].Length];
+                for (int jj = 0; jj < cells[0].Length; jj++) {
+                    copyCells[ii][jj] = new Cell(cells[ii][jj].i, cells[ii][jj].j, cells[ii][jj].floorValue);
+                    copyCells[ii][jj].x = cells[ii][jj].x;
+                    copyCells[ii][jj].y = cells[ii][jj].y;
+                    copyCells[ii][jj].isAWall = cells[ii][jj].isAWall;
+                    copyCells[ii][jj].isAPerson = cells[ii][jj].isAPerson;
+                    copyCells[ii][jj].isADoor = cells[ii][jj].isADoor;
+                    copyCells[ii][jj].howManyHoomansWereThere = cells[ii][jj].howManyHoomansWereThere;
+                }
+            }
+
+            return copyCells;
+        }
 
         internal static List<Cell> FindHoomans(Cell[][] cells) {
             List<Cell> listOfHoomans = new List<Cell>();
@@ -32,10 +49,9 @@ namespace Ha {
         }
 
 
-        internal static Cell FindNeighbour(Cell cell, Cell[][] cells, double panicParameter) {
-            System.Random r = new System.Random();
+        internal static Cell FindNeighbour(Cell cell, Cell[][] cells, double panicParameter, System.Random r) {
+            System.Threading.Thread.Sleep(5);
             double panic = r.NextDouble();
-
             if (panic > panicParameter) {
                 double minimumFloorValue = 666;
 
@@ -61,7 +77,7 @@ namespace Ha {
                         minimumFloorValue = neighbour.floorValue;
                     }
                 }
-                System.Console.WriteLine(minimumFloorValue.ToString());
+                //System.Console.WriteLine(minimumFloorValue.ToString());
                 foreach (Cell neighbour in listOfNeighbours) {                          //szukamy pola lub pol ktore maja najmniejsza wartosc i nie sa ludziami
                     if (neighbour.floorValue == minimumFloorValue) {
                         listOfNearestNeighbours.Add(neighbour);
@@ -71,12 +87,12 @@ namespace Ha {
                     return cell;
                 else {
                     System.Random rand = new System.Random();
-                    int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count); //losujemy komorke jesli jest ich wiecej niz 1 (w praktyce wiecej niz 0)
+                    int randomNeighbourIndex = rand.Next(listOfNearestNeighbours.Count); //losujemy komorke jesli jest sasiadow wiecej niz 1 (w praktyce wiecej niz 0)
 
                     return listOfNearestNeighbours[randomNeighbourIndex];
                 }
             } else {
-                return cell;
+                return cell;                                                             //panikuje i stoi
             }
         }
 
