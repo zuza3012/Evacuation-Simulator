@@ -18,6 +18,7 @@ namespace Ha {
             this.floorValue = floorValue;
         }
 
+
         internal static Cell[][] DeepCopy(Cell[][] cells) {
             Cell[][] copyCells = new Cell[cells.Length][];
             for (int ii = 0; ii < cells.Length; ii++) {
