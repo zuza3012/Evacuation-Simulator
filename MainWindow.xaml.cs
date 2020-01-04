@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -26,13 +27,14 @@ namespace Ha {
         int rows, cols, step;
         double offsetX, offsetY, panicParameter = 0, averageTime = 0, panicStep = 0.1;
         double[,] data;
-        Cell[][] cells;
+        Cell[][] cells, TheMostImportantCopyOfCells;
         String buffer;
-        int numberOfEvacuations = 0, numberOfIterations = 0;
+        int numberOfEvacuations = 0, numberOfIterations = 0, numberOfSimulations = 0;
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
         private BackgroundWorker calcWorker = null;
         private BackgroundWorker panicEvacuationWorker = null;
+        public static string path;
 
 
         protected override void OnClosed(EventArgs e) {
@@ -105,14 +107,36 @@ namespace Ha {
                             }
                         }
 
-                        Cell.FindHoomans(cells);
+                        //Cell.FindHoomans(cells);
                         break;
                     case MessageBoxResult.No:
                         break;
                 }
             }
+
+            TheMostImportantCopyOfCells = Cell.DeepCopy(cells);
         }
 
+        private string SaveArrayToFile(string fileName, double[,] array, string text) {
+           
+            System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
+            if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+
+                var dest = Path.Combine(openfiledalog.SelectedPath, fileName);
+
+                using (StreamWriter file = new StreamWriter(dest, false)) {
+                    for (int j = 0; j < array.GetLength(1); j++) {
+                        for (int i = 0; i < array.GetLength(0); i++) {
+                            file.Write(array[i,j].ToString() + '\t');
+                        }
+                        file.Write("\n");
+                    }
+                    MessageBox.Show("Data has been saved", text);
+                }
+
+            }
+            return openfiledalog.SelectedPath;
+        }
         private void SaveSimulatedData(object sender, RoutedEventArgs e) {
 
             String fileName = DateTime.Now.ToString("h/mm/ss_tt");
@@ -120,6 +144,7 @@ namespace Ha {
             if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 
                 var dest = Path.Combine(openfiledalog.SelectedPath, "floor_" + fileName + ".txt");
+
                 using (StreamWriter file = new StreamWriter(dest, false)) {
                     for (int j = 0; j < rows; j++) {
                         for (int i = 0; i < cols; i++) {
@@ -247,8 +272,16 @@ namespace Ha {
 
         private void multiplePanicParametersButton_Click(object sender, RoutedEventArgs e) {
             panicParameter = 0;
-            numberOfEvacuations = 100;
-            pop.Show();
+
+            var dialog = new GraphSettings();
+            if (dialog.ShowDialog() == true) {
+                numberOfEvacuations = Int32.Parse(dialog.TbNumberOfEvacuations.Text);
+                Console.WriteLine("number of evacuations " + numberOfEvacuations);
+                panicStep = Double.Parse(dialog.TbStep.Text);
+            }
+            dialog.Close();
+
+            
 
             panicEvacuationWorker = new BackgroundWorker();
             panicEvacuationWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
@@ -259,6 +292,7 @@ namespace Ha {
 
             if (!panicEvacuationWorker.IsBusy) {
                 panicEvacuationWorker.RunWorkerAsync();
+                pop.Show();
             }
         }
 
