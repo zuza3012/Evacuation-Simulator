@@ -6,21 +6,22 @@
         xmlns:local="clr-namespace:Ha"
         xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Graphs" Height="450" Width="800" ResizeMode="NoResize">
+        Title="Graphs" Height="768" Width="1024" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
+            <ColumnDefinition Width="1017*"/>
         </Grid.ColumnDefinitions>
-        <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,-6.4,0">
+        <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,0,0">
             <MenuItem  Header="File" Margin="2,0,0,0">
                 <MenuItem x:Name="saveGraph" Header="Save Garph"  IsEnabled="True" Click="SaveGraph_Click"/>
             </MenuItem>
         </Menu>
-        <TabControl HorizontalAlignment="Left" Height="380" Margin="10,30,0,10" VerticalAlignment="Top" Width="774" Grid.Column="1" BorderBrush="#FFFAF8F8">
+    
+        <TabControl HorizontalAlignment="Stretch" Height="698" Margin="10,30,10,0" VerticalAlignment="Top" Width="997" Grid.Column="1" BorderBrush="#FFFAF8F8">
             <TabItem x:Name="tab1" Header="Graph1">
                 <Wpf:CartesianChart x:Name="chart1"  Series="{Binding seriesCol}"
-                    LegendLocation="Bottom"/>
+                    LegendLocation="Bottom" Margin="0,0,31.8,21"/>
             </TabItem>
             <TabItem Header="Graph2" IsEnabled="False">
                 <Grid>

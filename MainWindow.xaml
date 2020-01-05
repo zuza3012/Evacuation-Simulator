@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ha"
         mc:Ignorable="d"
-        Title="Models of Evacuation - Simulator" Height="768" Width="1024" WindowStartupLocation="CenterScreen">
+        Icon="icon2.ico"
+        Title="Models of Evacuation - Simulator" Height="768" Width="1024" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 
     <Grid x:Name="supercalifragilisticexpialidociousGrid">
         <Menu Height="25" Width="1024" VerticalAlignment="Top">
