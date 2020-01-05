@@ -17,13 +17,10 @@
                 <MenuItem x:Name="saveGraph" Header="Save Garph"  IsEnabled="True" Click="SaveGraph_Click"/>
             </MenuItem>
         </Menu>
-        <TabControl HorizontalAlignment="Left" Height="380" Margin="10,30,0,10" VerticalAlignment="Top" Width="774" Grid.Column="1">
+        <TabControl HorizontalAlignment="Left" Height="380" Margin="10,30,0,10" VerticalAlignment="Top" Width="774" Grid.Column="1" BorderBrush="#FFFAF8F8">
             <TabItem x:Name="tab1" Header="Graph1">
-                <Grid>
-                    <Wpf:CartesianChart x:Name="chart1"  Series="{Binding seriesCol}"
-                    Margin="47,10,56.8,30"
+                <Wpf:CartesianChart x:Name="chart1"  Series="{Binding seriesCol}"
                     LegendLocation="Bottom"/>
-                </Grid>
             </TabItem>
             <TabItem Header="Graph2" IsEnabled="False">
                 <Grid>

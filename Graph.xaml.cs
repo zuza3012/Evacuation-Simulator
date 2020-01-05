@@ -4,6 +4,7 @@ using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
@@ -55,17 +56,17 @@ namespace Ha {
 
         private void SaveGraph_Click(object sender, RoutedEventArgs e) {
 
-            int chartWidth = (int)chart1.ActualWidth;
-            int chartHeight = (int)chart1.ActualHeight;
-            double resolution = 96d;
+             int chartWidth = (int)chart1.ActualWidth;
+             int chartHeight = (int)chart1.ActualHeight;
+             double resolution = 96d;
 
-            FileStream stream = new FileStream("graph.png", FileMode.Create);
-            RenderTargetBitmap bmp = new RenderTargetBitmap(chartWidth, chartHeight, resolution, resolution, PixelFormats.Pbgra32);
-            bmp.Render(chart1);
+             FileStream stream = new FileStream("graph.png", FileMode.Create);
+             RenderTargetBitmap bmp = new RenderTargetBitmap(chartWidth, chartHeight, resolution, resolution, PixelFormats.Pbgra32);
+             bmp.Render(chart1);
 
-            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bmp));
-            encoder.Save(stream);
+             BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+             encoder.Frames.Add(BitmapFrame.Create(bmp));
+             encoder.Save(stream);
 
             MessageBox.Show("Graph has been saved!", "Saving inforamtion");
 
@@ -88,7 +89,7 @@ namespace Ha {
                      Values = ListOfPoints,
                      PointGeometry = null, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
                      Title = chartTitle,
-                     Fill = System.Windows.Media.Brushes.Transparent
+                     Fill = System.Windows.Media.Brushes.White
                      
                    }
              };
@@ -105,7 +106,7 @@ namespace Ha {
                 Title = yTitle,
 
             });
-
+            chart.Background = System.Windows.Media.Brushes.White;
             chart.AxisX[0].Separator.StrokeThickness = 0;
             chart.AxisY[0].Separator.StrokeThickness = 0;
             chart.AxisY[0].Separator.IsEnabled = true;
