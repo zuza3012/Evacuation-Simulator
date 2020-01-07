@@ -27,13 +27,13 @@ namespace Ha {
         int rows, cols, step;
         double offsetX, offsetY, panicParameter = 0, averageTime = 0, panicStep = 0.1;
         double[,] data;
-        Cell[][] cells, TheMostImportantCopyOfCells;
+        Cell[][] cells, theMostImportantCopyOfCells;
         String buffer;
-        int numberOfEvacuations = 0, numberOfIterations = 0, numberOfSimulations = 0;
+        int numberOfEvacuations = 0, numberOfIterations = 0;
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
         private BackgroundWorker calcWorker = null;
-        private BackgroundWorker panicEvacuationWorker = null;
+        //private BackgroundWorker panicEvacuationWorker = null;
         public static string path;
 
 
@@ -71,7 +71,6 @@ namespace Ha {
 
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
             if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
-                evacuateHoomansBtn.IsEnabled = true;
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?"
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
                 switch (result) {
@@ -106,6 +105,7 @@ namespace Ha {
                                 canvas.Children.Add(floorValueLabel);
                             }
                         }
+                        evacuateHoomansBtn.IsEnabled = true;
 
                         //Cell.FindHoomans(cells);
                         break;
@@ -114,7 +114,7 @@ namespace Ha {
                 }
             }
 
-            TheMostImportantCopyOfCells = Cell.DeepCopy(cells);
+            theMostImportantCopyOfCells = Cell.DeepCopy(cells);
         }
 
         private string SaveArrayToFile(string fileName, double[,] array, string text) {
@@ -170,8 +170,9 @@ namespace Ha {
             }
         }
 
-        void EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {       //ewakuuje wszystkich
+        int EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {       //ewakuuje wszystkich i zwraca ilosc iteracji potrzebnych do ewakuacji
             int counter = 0;
+            int numberOfIterations = 0;
             buffer += "Time:" + counter.ToString() + " iterations" + '\n';
             for (int j = 0; j < rows; j++) {
                 for (int i = 0; i < cols; i++) {
@@ -230,6 +231,7 @@ namespace Ha {
                     Thread.Sleep(500);
                 }
             }
+            return numberOfIterations;
         }
 
         private void EvacuateHoomans(object sender, RoutedEventArgs e) {
@@ -254,19 +256,20 @@ namespace Ha {
                 numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
                 Console.WriteLine("number of evacuations " + numberOfEvacuations);
                 panicParameter = Double.Parse(dialog.panicParTb.Text);
-            }
-            dialog.Close();
-            if (null == calcWorker) {
-                calcWorker = new BackgroundWorker();
-                calcWorker.DoWork += new DoWorkEventHandler(CalcWorker_DoWork);
-                calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CalcWorker_RunWorkerCompleted);
-                calcWorker.ProgressChanged += new ProgressChangedEventHandler(CalcWorker_ProgressChanged);
-                calcWorker.WorkerReportsProgress = true;
-                calcWorker.WorkerSupportsCancellation = true;
-            }
-            if (!calcWorker.IsBusy) {
-                calcWorker.RunWorkerAsync();
-                pop.Show();
+
+                dialog.Close();
+                if (null == calcWorker) {
+                    calcWorker = new BackgroundWorker();
+                    calcWorker.DoWork += new DoWorkEventHandler(calcWorker_DoWork);
+                    calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(calcWorker_RunWorkerCompleted);
+                    calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
+                    calcWorker.WorkerReportsProgress = true;
+                    calcWorker.WorkerSupportsCancellation = true;
+                }
+                if (!calcWorker.IsBusy) {
+                    calcWorker.RunWorkerAsync();
+                    pop.Show();
+                }
             }
         }
 
@@ -281,24 +284,18 @@ namespace Ha {
             }
             dialog.Close();
 
-            
+            calcWorker = new BackgroundWorker();
+            calcWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
+            calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(panicEvacuationWorker_RunWorkerCompleted);
+            calcWorker.ProgressChanged += new ProgressChangedEventHandler(panicEvacuationWorker_ProgressChanged);
+            calcWorker.WorkerReportsProgress = true;
+            calcWorker.WorkerSupportsCancellation = true;
 
-            panicEvacuationWorker = new BackgroundWorker();
-            panicEvacuationWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
-            panicEvacuationWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(panicEvacuationWorker_RunWorkerCompleted);
-            panicEvacuationWorker.ProgressChanged += new ProgressChangedEventHandler(panicEvacuationWorker_ProgressChanged);
-            panicEvacuationWorker.WorkerReportsProgress = true;
-            panicEvacuationWorker.WorkerSupportsCancellation = true;
-
-            if (!panicEvacuationWorker.IsBusy) {
-                panicEvacuationWorker.RunWorkerAsync();
+            if (!calcWorker.IsBusy) {
+                calcWorker.RunWorkerAsync();
                 pop.Show();
             }
         }
-
-       
-
         #endregion
-
     }
 }

@@ -21,7 +21,7 @@ namespace Ha {
         public Graph1() {
             InitializeComponent();
 
-            DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "average evacuation time", "panic parameter");
+            DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "panic parameter", "average evacuation time");
 
             // nowy wykres
             // tab2.isEnabled = true;
@@ -89,11 +89,11 @@ namespace Ha {
             }
 
             seriesCol = new SeriesCollection {
-                  new LineSeries{
+                  new ScatterSeries{
                      Values = ListOfPoints,
-                     PointGeometry = null, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
+                     PointGeometry = DefaultGeometries.Square, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
                      Title = chartTitle,
-                     Fill = System.Windows.Media.Brushes.White
+//                     Fill = System.Windows.Media.Brushes.White
 
                    }
              };

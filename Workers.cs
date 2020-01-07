@@ -9,8 +9,7 @@ namespace Ha {
     /// </summary>
     public partial class MainWindow : Window {
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
-            numberOfIterations = 0;
-            EvacuationCalc(true, cells, panicParameter);
+            numberOfIterations = EvacuationCalc(true, cells, panicParameter);
             evacuationWorker.ReportProgress(100);
         }
 
@@ -25,7 +24,7 @@ namespace Ha {
 
         void evacuationWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             MessageBox.Show("Evacuation completed succesfully." + "\n" + "Evacuation time: " + numberOfIterations + " iterations", "You are the real hero!");
-            cells = Cell.DeepCopy(TheMostImportantCopyOfCells);
+            cells = Cell.DeepCopy(theMostImportantCopyOfCells);
 
             System.Threading.Thread.Sleep(500);
             for (int i = 1; i < cols - 1; i++) {                //wracamy do ulozenia poczatkowego
@@ -38,13 +37,11 @@ namespace Ha {
 
         // Drugi backgroundWorker do wielu symulacji "w tle" poprzez przycisk Simulate N Evacuations 
 
-        void CalcWorker_DoWork(object sender, DoWorkEventArgs e) {
+        void calcWorker_DoWork(object sender, DoWorkEventArgs e) {
             double sum = 0;
-            numberOfIterations = 0;
             for (int i = 0; i < numberOfEvacuations; i++) {
                 Cell[][] copyCells = Cell.DeepCopy(cells);
-                numberOfIterations = 0;
-                EvacuationCalc(false, copyCells, panicParameter);
+                numberOfIterations = EvacuationCalc(false, copyCells, panicParameter);
                 Console.WriteLine("Number of iterations: " + numberOfIterations);
                 calcWorker.ReportProgress(100 * i / numberOfEvacuations);
                 sum += (double)numberOfIterations;
@@ -54,48 +51,38 @@ namespace Ha {
             calcWorker.ReportProgress(100);
         }
 
-        void CalcWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+        void calcWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             pop.pgBar.Value = e.ProgressPercentage;
         }
 
-        void CalcWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+        void calcWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Hide();
-            MessageBox.Show(numberOfEvacuations + " simulations completed! " + "\n" + "Average evacuation time: " + averageTime + " iterations", "You are the real hero!");   
+            MessageBox.Show("Simulations completed! " + "\n" + "Average evacuation time: " + averageTime + " iterations", "You are the real hero!");
         }
 
 
 
         void panicEvacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
             int k = (int)(1 / panicStep);
-            numberOfSimulations = k;
             data = new double[2, k];
             panicParameter = 0;
 
             for (int j = 0; j < k; j++) {
                 double sum = 0;
-                //Console.WriteLine("Kupa");
                 for (int i = 0; i < numberOfEvacuations; i++) {
                     Cell[][] copyCells = Cell.DeepCopy(cells);
-                    numberOfIterations = 0;
-                    EvacuationCalc(false, copyCells, panicParameter);
+                    numberOfIterations = EvacuationCalc(false, copyCells, panicParameter);
                     Console.WriteLine("Number of iterations: " + numberOfIterations);
                     sum += (double)numberOfIterations;
+                    calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
                 }
                 averageTime = sum / numberOfEvacuations;
 
-                data[0, j] = averageTime;
-                data[1, j] = panicParameter;
+                data[1, j] = averageTime;
+                data[0, j] = panicParameter;
                 panicParameter += panicStep;
-                panicEvacuationWorker.ReportProgress(100 * j / k);
-                /*Console.WriteLine("Dane:");
-                for (int z = 0; z < k; z++) {
-                    Console.Write(data[0, z] + "\t" + data[1, z]);
-                    Console.WriteLine();
-                }*/
-                
             }
-            panicEvacuationWorker.ReportProgress(100);
-           
+            calcWorker.ReportProgress(100);
         }
 
         private void panicEvacuationWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -105,9 +92,9 @@ namespace Ha {
         private void panicEvacuationWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             //tutaj wstawic okienko z wykresem albo moze zapisywanie wykresu do pliku, cokolwiek 
             pop.Hide();
-            MessageBox.Show(numberOfSimulations + " simulations completed! " + "\n" + "I will save data and Fancy Graph", "You are the real hero!");
-            string fileName = DateTime.Now.ToString("h/mm/ss_tt");
-            path = SaveArrayToFile("data" + fileName + ".txt",data,"Simulations saved") + @"\" + "data" + fileName + ".txt";
+            MessageBox.Show("Simulations completed! " + "\n" + "I will save data and create Fancy Graph", "You are the real hero!");
+            string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
+            path = SaveArrayToFile(fileName + ".txt", data, "Simulations saved") + @"\" + "data" + fileName + ".txt";
 
             Graph1 graph1 = new Graph1();
             graph1.Show();

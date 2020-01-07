@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Path = System.IO.Path;
 
 namespace Ha {
     /// <summary>
@@ -125,30 +120,33 @@ namespace Ha {
                 rows = Convert.ToInt32(rowTb.Text);
                 cols = Convert.ToInt32(colTb.Text);
 
-                if (canvas.Width / cols < canvas.Height / rows) { //nadawanie wartosci stepu
-                    step = (int)canvas.Width / cols;
+                if (rows < 3 || cols < 3) {
+                    MessageBox.Show("Number of columns or rows can't be less than 3.", "Fatal error");
                 } else {
-                    step = (int)canvas.Height / rows;
-                }
-
-                offsetX = (canvas.Width - step * cols) / 2;       //nadawanie wartosci offsetom
-                offsetY = (canvas.Height - step * rows) / 2;
-
-                cells = new Cell[cols][];
-
-                for (int i = 0; i < cols; i++) {        //nadawanie komorkom wartosci x i y
-                    cells[i] = new Cell[rows];
-                    for (int j = 0; j < rows; j++) {
-                        cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step) {
-                            i = i,
-                            j = j
-                        };
+                    if (canvas.Width / cols < canvas.Height / rows) { //nadawanie wartosci stepu
+                        step = (int)canvas.Width / cols;
+                    } else {
+                        step = (int)canvas.Height / rows;
                     }
+
+                    offsetX = (canvas.Width - step * cols) / 2;       //nadawanie wartosci offsetom
+                    offsetY = (canvas.Height - step * rows) / 2;
+
+                    cells = new Cell[cols][];
+
+                    for (int i = 0; i < cols; i++) {        //nadawanie komorkom wartosci x i y
+                        cells[i] = new Cell[rows];
+                        for (int j = 0; j < rows; j++) {
+                            cells[i][j] = new Cell(offsetX + i * step, offsetY + j * step) {
+                                i = i,
+                                j = j
+                            };
+                        }
+                    }
+
+                    DrawLines();
+                    DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
                 }
-
-                DrawLines();
-                DrawWalls(); //zrobilem z tego odrebna funkcje bo sie przyda przy wstawianiu drzwi tak zeby byly jedne
-
             } else {
                 MessageBox.Show("Invalid inputs in rows and columns!", "Convertion Error");
             }
