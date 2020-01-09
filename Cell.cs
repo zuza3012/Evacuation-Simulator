@@ -33,8 +33,19 @@ namespace Ha {
                     copyCells[ii][jj].howManyHoomansWereThere = cells[ii][jj].howManyHoomansWereThere;
                 }
             }
-
             return copyCells;
+        }
+
+        internal static int DoorsCount(Cell[][] cells) {
+            int count = 0;
+            for(int j = 0; j < cells[0].Length; j++) {
+                for (int i = 0; i < cells.Length; i++) {
+                    if (cells[i][j].isADoor) {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
 
         internal static List<Cell> FindHoomans(Cell[][] cells) {
@@ -49,10 +60,73 @@ namespace Ha {
             return listOfHoomans;
         }
 
+        internal static List<Cell[][]> WiderDoor(Cell[][] cells) {
+            int cols = cells.Length;
+            int rows = cells[0].Length;
+            int iD = 0, jD = 0;
+            List<Cell[][]> cellsWithWiderDoors = new List<Cell[][]>();
+            cellsWithWiderDoors.Add(DeepCopy(cells));
+            for (int j = 0; j < cells[0].Length; j++) {
+                for (int i = 0; i < cells.Length; i++) {
+                    if (cells[i][j].isADoor) {
+                        iD = i;
+                        jD = j;
+                        break;
+                    }
+                }
+            }
 
-        internal static Cell FindNeighbour(Cell cell, Cell[][] cells, double panicParameter, System.Random r) {
-            System.Threading.Thread.Sleep(5);
-            double panic = r.NextDouble();
+            if (jD == 0 || jD == (rows - 1)) {
+               int counterLeft = 1, counterRight = 1;
+                
+                for (int c = 0; c < cols - 3; c++) {
+                    Cell[][] copyOfCells = DeepCopy(cellsWithWiderDoors[c]);
+                    if (iD - counterLeft > 0) {
+                            copyOfCells[iD - counterLeft][jD].isAWall = false;
+                            copyOfCells[iD - counterLeft][jD].isADoor = true;
+                        counterLeft++;
+                    } else if (iD + counterRight < rows - 1) {
+                            copyOfCells[iD + counterRight][jD].isAWall = false;
+                            copyOfCells[iD + counterRight][jD].isADoor = true;
+                        counterRight++;
+                    }
+                    GenerateField(copyOfCells);
+                    cellsWithWiderDoors.Add(copyOfCells);
+                }
+
+            } else if (iD == 0 || iD == (cols - 1)) {
+                int counterUp = 1, counterDown = 1;
+
+                for (int c = 0; c < rows - 3; c++) {
+                    Cell[][] copyOfCells = DeepCopy(cellsWithWiderDoors[c]);
+                    if (jD - counterUp > 0) {
+                        copyOfCells[iD][jD - counterUp].isAWall = false;
+                        copyOfCells[iD][jD - counterUp].isADoor = true;
+                        counterUp++;
+                    } else if (jD + counterDown < cols - 1) {
+                        copyOfCells[iD][jD + counterDown].isAWall = false;
+                        copyOfCells[iD][jD + counterDown].isADoor = true;
+                        counterDown++;
+                    }
+                    GenerateField(copyOfCells);
+                    cellsWithWiderDoors.Add(copyOfCells);
+                }
+            }
+
+
+
+            return cellsWithWiderDoors;
+        }
+
+        internal static Cell FindNeighbour(Cell cell, Cell[][] cells, double panicParameter) {
+            double panic;
+            using (System.Security.Cryptography.RNGCryptoServiceProvider crypto = new System.Security.Cryptography.RNGCryptoServiceProvider()) {
+                byte[] val = new byte[6];
+                uint maxUInt = uint.MaxValue;
+                crypto.GetBytes(val);
+                panic = System.BitConverter.ToUInt32(val, 1) / (double)maxUInt;
+                System.Console.WriteLine("panic: " + panic);
+            }
             if (panic > panicParameter) {
                 double minimumFloorValue = 666;
 

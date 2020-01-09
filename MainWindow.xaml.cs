@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using Path = System.IO.Path;
 
 
@@ -26,7 +22,7 @@ namespace Ha {
         //Parametry globalne kalkulacji 
         int rows, cols, step;
         double offsetX, offsetY, panicParameter = 0, averageTime = 0, panicStep = 0.1;
-        double[,] data;
+        double[,] data, doorData;
         Cell[][] cells, theMostImportantCopyOfCells;
         String buffer;
         int numberOfEvacuations = 0, numberOfIterations = 0;
@@ -57,7 +53,7 @@ namespace Ha {
                 return false;
             }
         }
-
+       
         private void ParametersDialog(object sender, RoutedEventArgs e) {
             var dialog = new ParameterWindow();
             if (dialog.ShowDialog() == true) {
@@ -83,6 +79,8 @@ namespace Ha {
                         evacuateHoomansBtn.IsEnabled = true;
                         evacuateHoomansNTimesBtn.IsEnabled = true;
                         multiplePanicParametersButton.IsEnabled = true;
+                        if(Cell.DoorsCount(cells) == 1)
+                            widerDoorButton.IsEnabled = true;
 
                         Label floorValueLabel;
                         for (int i = 0; i < cols; i++) {
@@ -137,6 +135,7 @@ namespace Ha {
             }
             return openfiledalog.SelectedPath;
         }
+
         private void SaveSimulatedData(object sender, RoutedEventArgs e) {
 
             String fileName = DateTime.Now.ToString("h/mm/ss_tt");
@@ -188,18 +187,19 @@ namespace Ha {
                 }
                 buffer += '\n';
             }
-            while (Cell.FindHoomans(fieldArray).Count != 0) {
+            List<Cell> listOfHoomans = Cell.FindHoomans(fieldArray);
+            while (listOfHoomans.Count != 0) {
                 counter++;
                 numberOfIterations++;
                 buffer += "Time: " + counter.ToString() + " iterations" + '\n';
-
-                List<Cell> listOfHoomans = Cell.FindHoomans(fieldArray);
+                
                 Cell evacuateTo;
                 foreach (Cell cell in listOfHoomans) {
                     cell.howManyHoomansWereThere += 1;
-                    evacuateTo = Cell.FindNeighbour(cell, fieldArray, panicParameter, new Random());       //znajdujemy pozycje gdzie ma sie ewakuowac
+                    evacuateTo = Cell.FindNeighbour(cell, fieldArray, panicParameter);       //znajdujemy pozycje gdzie ma sie ewakuowac
                     fieldArray[cell.i][cell.j].isAPerson = false;            //likwidujemy ludzika z miejsca gdzie stal
                     fieldArray[evacuateTo.i][evacuateTo.j].isAPerson = true; //i wstawiamy go tam gdzie ma sie ewakuowac
+
                 }
 
                 Random rng = new Random();  //szuffle
@@ -230,7 +230,10 @@ namespace Ha {
                     evacuationWorker.ReportProgress(1);
                     Thread.Sleep(500);
                 }
+
+                listOfHoomans = Cell.FindHoomans(fieldArray);
             }
+
             return numberOfIterations;
         }
 
@@ -287,7 +290,7 @@ namespace Ha {
             calcWorker = new BackgroundWorker();
             calcWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
             calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(panicEvacuationWorker_RunWorkerCompleted);
-            calcWorker.ProgressChanged += new ProgressChangedEventHandler(panicEvacuationWorker_ProgressChanged);
+            calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
             calcWorker.WorkerReportsProgress = true;
             calcWorker.WorkerSupportsCancellation = true;
 
@@ -296,6 +299,11 @@ namespace Ha {
                 pop.Show();
             }
         }
+
+        private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
+
+        }
+
         #endregion
     }
 }

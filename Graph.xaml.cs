@@ -57,12 +57,12 @@ namespace Ha {
             int chartHeight = (int)chart1.ActualHeight;
             double resolution = 96d;
 
-            string fileName = DateTime.Now.ToString("h/mm/ss_tt");
+            string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
 
             System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
             if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 
-                var dest = Path.Combine(openfiledalog.SelectedPath, "graph_" + fileName + ".png");
+                var dest = Path.Combine(openfiledalog.SelectedPath, fileName + ".png");
 
                 FileStream stream = new FileStream(dest, FileMode.Create);
                 RenderTargetBitmap bmp = new RenderTargetBitmap(chartWidth, chartHeight, resolution, resolution, PixelFormats.Pbgra32);
