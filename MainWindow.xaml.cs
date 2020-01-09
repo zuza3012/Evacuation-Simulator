@@ -30,7 +30,8 @@ namespace Ha {
         private BackgroundWorker evacuationWorker = null;
         private BackgroundWorker calcWorker = null;
         //private BackgroundWorker panicEvacuationWorker = null;
-        public static string path;
+        public static string path, path2;
+        private bool widerDoorButtonClicked = false, multiplePanicParametersButtonClicked = false;
 
 
         protected override void OnClosed(EventArgs e) {
@@ -40,6 +41,7 @@ namespace Ha {
             Console.WriteLine("Application has been closed");
         }
 
+       
         private bool CheckConvertion(string name) {
             int number;
 
@@ -79,7 +81,8 @@ namespace Ha {
                         evacuateHoomansBtn.IsEnabled = true;
                         evacuateHoomansNTimesBtn.IsEnabled = true;
                         multiplePanicParametersButton.IsEnabled = true;
-                        if(Cell.DoorsCount(cells) == 1)
+                        
+                        if (Cell.DoorsCount(cells) == 1)
                             widerDoorButton.IsEnabled = true;
 
                         Label floorValueLabel;
@@ -129,7 +132,7 @@ namespace Ha {
                         }
                         file.Write("\n");
                     }
-                    MessageBox.Show("Data has been saved", text);
+                    MessageBox.Show("Data has been saved!", text);
                 }
 
             }
@@ -277,6 +280,7 @@ namespace Ha {
         }
 
         private void multiplePanicParametersButton_Click(object sender, RoutedEventArgs e) {
+            multiplePanicParametersButtonClicked = true;
             panicParameter = 0;
 
             var dialog = new GraphSettings();
@@ -298,10 +302,34 @@ namespace Ha {
                 calcWorker.RunWorkerAsync();
                 pop.Show();
             }
+
+            if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
+                showGraphsBtn.IsEnabled = true;
+            } 
         }
 
         private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
+            widerDoorButtonClicked = true;
+            calcWorker = new BackgroundWorker();
+            calcWorker.DoWork += new DoWorkEventHandler(widerDoor_DoWork);
+            calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(widerDoor_RunWorkerCompleted);
+            calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
+            calcWorker.WorkerReportsProgress = true;
+            calcWorker.WorkerSupportsCancellation = true;
 
+            if (!calcWorker.IsBusy) {
+                calcWorker.RunWorkerAsync();
+                pop.Show();
+            }
+            
+            if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
+                showGraphsBtn.IsEnabled = true;
+            }
+        }
+
+        private void ShowGraphs_Click(object sender, RoutedEventArgs e) {       
+            Graph graph = new Graph();
+            graph.Show(); 
         }
 
         #endregion

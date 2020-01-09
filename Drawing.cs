@@ -114,6 +114,7 @@ namespace Ha {
             evacuateHoomansBtn.IsEnabled = false;
             evacuateHoomansNTimesBtn.IsEnabled = false;
             multiplePanicParametersButton.IsEnabled = false;
+            showGraphsBtn.IsEnabled = false;
             canvas.Children.Clear();
 
             if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {

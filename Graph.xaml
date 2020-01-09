@@ -1,4 +1,4 @@
-﻿<Window x:Class="Ha.Graph1"
+﻿<Window x:Class="Ha.Graph"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,25 +17,15 @@
                 <MenuItem x:Name="saveGraph" Header="Save Garph"  IsEnabled="True" Click="SaveGraph_Click"/>
             </MenuItem>
         </Menu>
-    
+
         <TabControl HorizontalAlignment="Stretch" Height="698" Margin="10,30,10,0" VerticalAlignment="Top" Width="997" Grid.Column="1" BorderBrush="#FFFAF8F8">
             <TabItem x:Name="tab1" Header="Graph1">
                 <Wpf:CartesianChart x:Name="chart1"  Series="{Binding seriesCol}"
                     LegendLocation="Bottom" Margin="0,0,31.8,21"/>
             </TabItem>
-            <TabItem Header="Graph2" IsEnabled="False">
-                <Grid>
-                    <Wpf:CartesianChart x:Name="chart2"  Series="{Binding seriesCol}"
-                    Margin="47,10,56.8,30"
-                    LegendLocation="Bottom">
-                        <Wpf:CartesianChart.AxisX>
-                            <Wpf:Axis/>
-                        </Wpf:CartesianChart.AxisX>
-                        <Wpf:CartesianChart.AxisY>
-                            <Wpf:Axis/>
-                        </Wpf:CartesianChart.AxisY>
-                    </Wpf:CartesianChart>
-                </Grid>
+            <TabItem x:Name="tab2"  Header="Graph2">
+                <Wpf:CartesianChart x:Name="chart2"  Series="{Binding seriesCol}"
+                    LegendLocation="Bottom" Margin="0,0,31.8,21"/>
             </TabItem>
         </TabControl>
     </Grid>

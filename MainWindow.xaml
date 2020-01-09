@@ -38,8 +38,9 @@
             <Button x:Name="calculate" Margin="30,3,30,3" Content="Create Floor Field" Width="114" Click="GenerateFloorField" IsEnabled="False"/>
             <Button x:Name="evacuateHoomansBtn" Content="Simulate Example Evacuation" Margin="0,3,30,3" Width="162" Click="EvacuateHoomans" IsEnabled="False"/>
             <Button x:Name="evacuateHoomansNTimesBtn" Content="Simulate N Evacuations" Margin="0,3,30,3" Width="130" Click="EvacuateHoomansNTimesBtn_Click" IsEnabled="False"/>
-            <Button x:Name="multiplePanicParametersButton" Content="Generate Some Fancy Graph" Width="157" Margin="0,3,30,3" Click="multiplePanicParametersButton_Click" IsEnabled="False"/>
-            <Button x:Name="widerDoorButton" Content="Simulate wider doors" Width="123" Margin="0,3,30,3" Click="widerDoorButton_Click" IsEnabled="False"/>
+            <Button x:Name="multiplePanicParametersButton" Content="Generate data to first graph" Width="157" Margin="0,3,30,3" Click="multiplePanicParametersButton_Click" IsEnabled="False"/>
+            <Button x:Name="widerDoorButton"  Content="Simulate wider doors" Width="123" Margin="0,3,30,3" Click="widerDoorButton_Click" IsEnabled="False"/>
+            <Button x:Name="showGraphsBtn" Content="Show Graphs" Margin="0,3,30,3" Width="75" Click="ShowGraphs_Click" IsEnabled="False"/>
 
 
         </WrapPanel>

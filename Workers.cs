@@ -88,14 +88,10 @@ namespace Ha {
 
 
         private void panicEvacuationWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            //tutaj wstawic okienko z wykresem albo moze zapisywanie wykresu do pliku, cokolwiek 
             pop.Hide();
-            MessageBox.Show("Simulations completed! " + "\n" + "I will save data and create Fancy Graph", "You are the real hero!");
+            MessageBox.Show("Simulations completed! ", "You are the real hero!");
             string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
             path = SaveArrayToFile(fileName + ".txt", data, "Simulations saved") + @"\" + fileName + ".txt";
-
-            Graph1 graph1 = new Graph1();
-            graph1.Show();
         }
 
         private void widerDoor_DoWork(object sender, DoWorkEventArgs e) {
@@ -113,10 +109,16 @@ namespace Ha {
                 calcWorker.ReportProgress((int)(100 * (double)counter/l));
             }
             calcWorker.ReportProgress(100);
+            
+
         }
 
         private void widerDoor_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            //wykresik i messagebox ze jest fajnie
+            pop.Hide();
+            MessageBox.Show("Data has been created!", "You are the real hero!");
+            
+            string fileName = "Data_" + DateTime.Now.ToString("h/mm/ss_tt");
+            path2 = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved") + @"\" + fileName + ".txt";
         }
     }
 }

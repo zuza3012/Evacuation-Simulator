@@ -14,18 +14,19 @@ namespace Ha {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Graph1 : Window {
+    public partial class Graph : Window {
         public SeriesCollection seriesCol { get; set; }
         List<double> xValues, yValues;
         ChartValues<ObservablePoint> ListOfPoints = new ChartValues<ObservablePoint>();
-        public Graph1() {
+        public Graph() {
             InitializeComponent();
-
-            DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "panic parameter", "average evacuation time");
-
-            // nowy wykres
-            // tab2.isEnabled = true;
-
+            Console.WriteLine(MainWindow.path);
+            Console.WriteLine(MainWindow.path2);
+            if (tab1.IsSelected) {
+                DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "panic parameter", "average evacuation time");
+            } else {
+                DrawChart(chart2, MainWindow.path2, "Funny Graph", "Door's width", "average evacuation time");
+            }  
         }
 
         private List<double>[] ReadDataFromFile(string filePath) {
@@ -116,8 +117,8 @@ namespace Ha {
             chart.AxisY[0].Separator.IsEnabled = true;
 
 
-
             chart.DataContext = this;
+
         }
 
     }
