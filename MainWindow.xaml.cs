@@ -303,9 +303,10 @@ namespace Ha {
                 pop.Show();
             }
 
-            if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
-                showGraphsBtn.IsEnabled = true;
-            } 
+            /* if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
+                 showGraphsBtn.IsEnabled = true;
+             } */
+            
         }
 
         private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
@@ -321,15 +322,11 @@ namespace Ha {
                 calcWorker.RunWorkerAsync();
                 pop.Show();
             }
-            
-            if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
-                showGraphsBtn.IsEnabled = true;
-            }
-        }
 
-        private void ShowGraphs_Click(object sender, RoutedEventArgs e) {       
-            Graph graph = new Graph();
-            graph.Show(); 
+            /*if ((multiplePanicParametersButtonClicked && widerDoorButtonClicked) == true) {
+                showGraphsBtn.IsEnabled = true;
+            }*/
+            
         }
 
         #endregion

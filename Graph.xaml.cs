@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Ha {
     /// <summary>
@@ -18,15 +19,14 @@ namespace Ha {
         public SeriesCollection seriesCol { get; set; }
         List<double> xValues, yValues;
         ChartValues<ObservablePoint> ListOfPoints = new ChartValues<ObservablePoint>();
-        public Graph() {
+        public Graph(int k) {
             InitializeComponent();
-            Console.WriteLine(MainWindow.path);
-            Console.WriteLine(MainWindow.path2);
-            if (tab1.IsSelected) {
+            if (k == 1) {
+
                 DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "panic parameter", "average evacuation time");
             } else {
-                DrawChart(chart2, MainWindow.path2, "Funny Graph", "Door's width", "average evacuation time");
-            }  
+                DrawChart(chart1, MainWindow.path2, "Funny Graph", "door's width", "average evacuation time");
+            }
         }
 
         private List<double>[] ReadDataFromFile(string filePath) {
@@ -92,7 +92,8 @@ namespace Ha {
             seriesCol = new SeriesCollection {
                   new ScatterSeries{
                      Values = ListOfPoints,
-                     PointGeometry = DefaultGeometries.Square, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
+                     PointGeometry = DefaultGeometries.Circle, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
+                     
                      Title = chartTitle,
 //                     Fill = System.Windows.Media.Brushes.White
 
@@ -115,7 +116,6 @@ namespace Ha {
             chart.AxisX[0].Separator.StrokeThickness = 0;
             chart.AxisY[0].Separator.StrokeThickness = 0;
             chart.AxisY[0].Separator.IsEnabled = true;
-
 
             chart.DataContext = this;
 

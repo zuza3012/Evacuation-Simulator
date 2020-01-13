@@ -17,17 +17,8 @@
                 <MenuItem x:Name="saveGraph" Header="Save Garph"  IsEnabled="True" Click="SaveGraph_Click"/>
             </MenuItem>
         </Menu>
-
-        <TabControl HorizontalAlignment="Stretch" Height="698" Margin="10,30,10,0" VerticalAlignment="Top" Width="997" Grid.Column="1" BorderBrush="#FFFAF8F8">
-            <TabItem x:Name="tab1" Header="Graph1">
                 <Wpf:CartesianChart x:Name="chart1"  Series="{Binding seriesCol}"
-                    LegendLocation="Bottom" Margin="0,0,31.8,21"/>
-            </TabItem>
-            <TabItem x:Name="tab2"  Header="Graph2">
-                <Wpf:CartesianChart x:Name="chart2"  Series="{Binding seriesCol}"
-                    LegendLocation="Bottom" Margin="0,0,31.8,21"/>
-            </TabItem>
-        </TabControl>
+                    LegendLocation="Bottom" Margin="10,35,10,10" Grid.ColumnSpan="2" />
     </Grid>
 </Window>
 

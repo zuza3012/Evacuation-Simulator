@@ -92,9 +92,12 @@ namespace Ha {
             MessageBox.Show("Simulations completed! ", "You are the real hero!");
             string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
             path = SaveArrayToFile(fileName + ".txt", data, "Simulations saved") + @"\" + fileName + ".txt";
+            Graph graph = new Graph(1);
+            graph.Show();
         }
 
         private void widerDoor_DoWork(object sender, DoWorkEventArgs e) {
+            panicParameter = 0;
             List<Cell[][]> cellsWithWiderDoors = Cell.WiderDoor(cells);
             int l = cellsWithWiderDoors.Count;
 
@@ -119,6 +122,8 @@ namespace Ha {
             
             string fileName = "Data_" + DateTime.Now.ToString("h/mm/ss_tt");
             path2 = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved") + @"\" + fileName + ".txt";
+            Graph graph = new Graph(2);
+            graph.Show();
         }
     }
 }
