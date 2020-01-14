@@ -130,16 +130,34 @@ namespace Ha {
             if (panic > panicParameter) {
                 double minimumFloorValue = 666;
 
-                List<Cell> listOfNeighbours = new List<Cell> {
-                cells[cell.i - 1][cell.j],                  //sasiad z lewej
-                cells[cell.i + 1][cell.j],                  //sasiad z prawej
-                cells[cell.i][cell.j - 1],                  //sasiad z gory
-                cells[cell.i][cell.j + 1],                  //sasiad z dolu
-                cells[cell.i - 1][cell.j - 1],              //sasiad z lewej gory
-                cells[cell.i + 1][cell.j - 1],              //sasiad z prawej gory
-                cells[cell.i - 1][cell.j + 1],              //sasiad z lewego dolu
-                cells[cell.i + 1][cell.j + 1]               //sasiad z prawego dolu
-            };
+                List<Cell> listOfNeighbours = new List<Cell>();
+                if (!cells[cell.i - 1][cell.j].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i - 1][cell.j]);                  //sasiad z lewej
+                }
+                if (!cells[cell.i + 1][cell.j].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i + 1][cell.j]);                  //sasiad z prawej
+                }
+                if (!cells[cell.i][cell.j - 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i][cell.j - 1]);                  //sasiad z gory
+                }
+                if (!cells[cell.i][cell.j + 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i][cell.j + 1]);                  //sasiad z dolu
+                }
+                if (!cells[cell.i - 1][cell.j - 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i - 1][cell.j - 1]);              //sasiad z lewej gory
+                }
+                if (!cells[cell.i + 1][cell.j - 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i + 1][cell.j - 1]);              //sasiad z prawej gory
+                }
+                if (!cells[cell.i - 1][cell.j + 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i - 1][cell.j + 1]);              //sasiad z lewego dolu
+                }
+                if (!cells[cell.i + 1][cell.j + 1].isAPerson) {
+                    listOfNeighbours.Add(cells[cell.i + 1][cell.j + 1]);              //sasiad z prawego dolu
+                }
+
+                if (listOfNeighbours.Count == 0)
+                    return cell;
 
                 List<Cell> listOfNearestNeighbours = new List<Cell>();
                 foreach (Cell neighbour in listOfNeighbours) {
@@ -148,16 +166,17 @@ namespace Ha {
                         return neighbour;
                     }
 
-                    if (neighbour.floorValue < cell.floorValue && !neighbour.isAPerson && neighbour.floorValue < minimumFloorValue) {//szukamy najmniejszej wartosci pola w ogole
+                    if (neighbour.floorValue < cell.floorValue && neighbour.floorValue < minimumFloorValue) {//szukamy najmniejszej wartosci pola w ogole
                         minimumFloorValue = neighbour.floorValue;
                     }
                 }
-                //System.Console.WriteLine(minimumFloorValue.ToString());
+
                 foreach (Cell neighbour in listOfNeighbours) {                          //szukamy pola lub pol ktore maja najmniejsza wartosc i nie sa ludziami
                     if (neighbour.floorValue == minimumFloorValue) {
                         listOfNearestNeighbours.Add(neighbour);
                     }
                 }
+
                 if (listOfNearestNeighbours.Count == 0)
                     return cell;
                 else {

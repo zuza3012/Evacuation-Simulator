@@ -11,6 +11,7 @@ namespace Ha {
     public partial class MainWindow : Window {
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
             numberOfIterations = EvacuationCalc(true, cells, panicParameter);
+            
             evacuationWorker.ReportProgress(100);
         }
 
@@ -67,7 +68,7 @@ namespace Ha {
             int k = (int)(1 / panicStep);
             data = new double[2, k];
             panicParameter = 0;
-
+            calcWorker.ReportProgress(0);
             for (int j = 0; j < k; j++) {
                 double sum = 0;
                 for (int i = 0; i < numberOfEvacuations; i++) {

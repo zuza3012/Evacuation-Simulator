@@ -29,9 +29,7 @@ namespace Ha {
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
         private BackgroundWorker calcWorker = null;
-        //private BackgroundWorker panicEvacuationWorker = null;
         public static string path, path2;
-        private bool widerDoorButtonClicked = false, multiplePanicParametersButtonClicked = false;
 
 
         protected override void OnClosed(EventArgs e) {
@@ -47,7 +45,6 @@ namespace Ha {
 
             bool success = Int32.TryParse(name, out number);
             if (success) {
-                Console.WriteLine("Converted correctly", name, number);
                 return true;
             } else {
                 Console.WriteLine("Attempted conversion of '{0}' failed.",
@@ -192,6 +189,7 @@ namespace Ha {
             }
             List<Cell> listOfHoomans = Cell.FindHoomans(fieldArray);
             while (listOfHoomans.Count != 0) {
+                Console.WriteLine(listOfHoomans.Count);
                 counter++;
                 numberOfIterations++;
                 buffer += "Time: " + counter.ToString() + " iterations" + '\n';
@@ -201,8 +199,9 @@ namespace Ha {
                     cell.howManyHoomansWereThere += 1;
                     evacuateTo = Cell.FindNeighbour(cell, fieldArray, panicParameter);       //znajdujemy pozycje gdzie ma sie ewakuowac
                     fieldArray[cell.i][cell.j].isAPerson = false;            //likwidujemy ludzika z miejsca gdzie stal
-                    fieldArray[evacuateTo.i][evacuateTo.j].isAPerson = true; //i wstawiamy go tam gdzie ma sie ewakuowac
-
+                    if (!evacuateTo.isADoor) {
+                        fieldArray[evacuateTo.i][evacuateTo.j].isAPerson = true; //i wstawiamy go tam gdzie ma sie ewakuowac
+                    }
                 }
 
                 Random rng = new Random();  //szuffle
@@ -280,7 +279,6 @@ namespace Ha {
         }
 
         private void multiplePanicParametersButton_Click(object sender, RoutedEventArgs e) {
-            multiplePanicParametersButtonClicked = true;
             panicParameter = 0;
 
             var dialog = new GraphSettings();
@@ -310,7 +308,6 @@ namespace Ha {
         }
 
         private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
-            widerDoorButtonClicked = true;
             calcWorker = new BackgroundWorker();
             calcWorker.DoWork += new DoWorkEventHandler(widerDoor_DoWork);
             calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(widerDoor_RunWorkerCompleted);
