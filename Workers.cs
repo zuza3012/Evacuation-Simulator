@@ -43,10 +43,8 @@ namespace Ha {
             double sum = 0;
             for (int i = 0; i < numberOfEvacuations; i++) {
                 Cell[][] copyCells = Cell.DeepCopy(cells);
-                numberOfIterations = EvacuationCalc(false, copyCells, panicParameter);
-                Console.WriteLine("Number of iterations: " + numberOfIterations);
-                calcWorker.ReportProgress(100 * i / numberOfEvacuations);
-                sum += (double)numberOfIterations;
+                sum += EvacuationCalc(false, copyCells, panicParameter);
+                calcWorker.ReportProgress((int)(100 * i / (double)numberOfEvacuations));
             }
 
             averageTime = sum / numberOfEvacuations;
@@ -73,14 +71,11 @@ namespace Ha {
                 double sum = 0;
                 for (int i = 0; i < numberOfEvacuations; i++) {
                     Cell[][] copyCells = Cell.DeepCopy(cells);
-                    numberOfIterations = EvacuationCalc(false, copyCells, panicParameter);
-                    Console.WriteLine("Number of iterations: " + numberOfIterations);
-                    sum += (double)numberOfIterations;
+                    sum += EvacuationCalc(false, copyCells, panicParameter);
                     calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
                 }
-                averageTime = sum / numberOfEvacuations;
 
-                data[1, j] = averageTime;
+                data[1, j] = sum / numberOfEvacuations;
                 data[0, j] = panicParameter;
                 panicParameter += panicStep;
             }
@@ -98,19 +93,22 @@ namespace Ha {
         }
 
         private void widerDoor_DoWork(object sender, DoWorkEventArgs e) {
-            panicParameter = 0;
             List<Cell[][]> cellsWithWiderDoors = Cell.WiderDoor(cells);
             int l = cellsWithWiderDoors.Count;
 
             doorData = new double[2,l];
+
             int counter = 0;
             foreach(Cell[][] copy in cellsWithWiderDoors) {
-                numberOfIterations = EvacuationCalc(false, copy, panicParameter);
+                double sum = 0;
+                for (int k = 0; k < numberOfEvacuations; k++) {
+                    sum += EvacuationCalc(false, copy, panicParameter);
+                    calcWorker.ReportProgress((int)(100 * (double)counter / l + k));
+                }
                 doorData[0, counter] = counter + 1;
-                doorData[1, counter] = numberOfIterations;
-
+                doorData[1, counter] = sum / numberOfEvacuations;
                 counter++;
-                calcWorker.ReportProgress((int)(100 * (double)counter/l));
+                
             }
             calcWorker.ReportProgress(100);
             

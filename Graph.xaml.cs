@@ -73,7 +73,7 @@ namespace Ha {
                 encoder.Frames.Add(BitmapFrame.Create(bmp));
                 encoder.Save(stream);
 
-                MessageBox.Show("Graph has been saved!", "Saving inforamtion");
+                MessageBox.Show("Graph has been saved!", "Saving information");
             }
         }
 
@@ -90,12 +90,13 @@ namespace Ha {
             }
 
             seriesCol = new SeriesCollection {
-                  new ScatterSeries{
+                  new LineSeries{
                      Values = ListOfPoints,
+                     LineSmoothness = 0,
                      PointGeometry = DefaultGeometries.Circle, // DefaultGeometries.Square tylko jak jest malo punktuf, inzcaej kupcia
                      
                      Title = chartTitle,
-//                     Fill = System.Windows.Media.Brushes.White
+                     Fill = System.Windows.Media.Brushes.White
 
                    }
              };
