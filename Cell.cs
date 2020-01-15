@@ -125,7 +125,7 @@ namespace Ha {
                 uint maxUInt = uint.MaxValue;
                 crypto.GetBytes(val);
                 panic = System.BitConverter.ToUInt32(val, 1) / (double)maxUInt;
-                System.Console.WriteLine("panic: " + panic);
+                //System.Console.WriteLine("panic: " + panic);
             }
             if (panic > panicParameter) {
                 double minimumFloorValue = 666;
@@ -323,7 +323,7 @@ namespace Ha {
                     int pos = listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.IndexOf(copyOfCells);
                     iD = listOfDoors.ElementAt(pos).i;
                     jD = listOfDoors.ElementAt(pos).j;
-                    System.Console.WriteLine("Drzwi:" + "(" + iD + ", " + jD + ")");
+                    //System.Console.WriteLine("Drzwi:" + "(" + iD + ", " + jD + ")");
 
 
                     List<Cell> listOfCells = new List<Cell>();

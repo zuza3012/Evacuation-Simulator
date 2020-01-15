@@ -63,6 +63,7 @@ namespace Ha {
 
 
         void panicEvacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
+            Console.WriteLine("panika");
             int k = (int)(1 / panicStep);
             data = new double[2, k];
             panicParameter = 0;
@@ -73,7 +74,13 @@ namespace Ha {
                     Cell[][] copyCells = Cell.DeepCopy(cells);
                     sum += EvacuationCalc(false, copyCells, panicParameter);
                     calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
+                    Console.WriteLine(sum);
+                    Console.WriteLine("[1][3] isPerson? " + copyCells[1][3].isAPerson);
                 }
+                Console.WriteLine();
+                Console.WriteLine("sum po forze: " + sum);
+                Console.WriteLine();
+                Console.WriteLine("numberOfEvacuations: " + numberOfEvacuations);
 
                 data[1, j] = sum / numberOfEvacuations;
                 data[0, j] = panicParameter;
@@ -93,18 +100,27 @@ namespace Ha {
         }
 
         private void widerDoor_DoWork(object sender, DoWorkEventArgs e) {
+            Console.WriteLine("Wider doors");
             List<Cell[][]> cellsWithWiderDoors = Cell.WiderDoor(cells);
             int l = cellsWithWiderDoors.Count;
 
             doorData = new double[2,l];
 
             int counter = 0;
-            foreach(Cell[][] copy in cellsWithWiderDoors) {
+            foreach (Cell[][] copy in cellsWithWiderDoors) {
+                Console.WriteLine("Foreeach [1][3] isPerson? " + copy[1][3].isAPerson);
                 double sum = 0;
                 for (int k = 0; k < numberOfEvacuations; k++) {
+                    Console.WriteLine("[1][3] isPerson? " + copy[1][3].isAPerson);
                     sum += EvacuationCalc(false, copy, panicParameter);
                     calcWorker.ReportProgress((int)(100 * (double)counter / l + k));
+                    Console.WriteLine("sum: " + sum);
+                    Console.WriteLine("zwrot funkcji EvacuationCalc " + EvacuationCalc(false, copy, panicParameter));
                 }
+                Console.WriteLine();
+                Console.WriteLine("sum po forze: " + sum);
+                Console.WriteLine();
+                Console.WriteLine("numberOfEvacuations: " + numberOfEvacuations);
                 doorData[0, counter] = counter + 1;
                 doorData[1, counter] = sum / numberOfEvacuations;
                 counter++;

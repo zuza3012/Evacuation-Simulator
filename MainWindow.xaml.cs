@@ -258,7 +258,6 @@ namespace Ha {
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
                 numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
-                Console.WriteLine("number of evacuations " + numberOfEvacuations);
                 panicParameter = Double.Parse(dialog.panicParTb.Text);
 
                 dialog.Close();
@@ -283,7 +282,6 @@ namespace Ha {
             var dialog = new GraphSettings();
             if (dialog.ShowDialog() == true) {
                 numberOfEvacuations = Int32.Parse(dialog.TbNumberOfEvacuations.Text);
-                Console.WriteLine("number of evacuations " + numberOfEvacuations);
                 panicStep = Double.Parse(dialog.TbStep.Text);
 
                 dialog.Close();
@@ -306,8 +304,8 @@ namespace Ha {
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
                 numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
-                Console.WriteLine("number of evacuations " + numberOfEvacuations);
                 panicParameter = Double.Parse(dialog.panicParTb.Text);
+                Console.WriteLine("panic parameter: " + panicParameter);
 
                 dialog.Close();
 
