@@ -18,19 +18,30 @@ namespace Ha {
             this.floorValue = floorValue;
         }
 
+        public Cell(Cell other) {
+            this.x = other.x;
+            this.y = other.y;
+            this.isAWall = other.isAWall;
+            this.isAPerson = other.isAPerson;
+            this.isADoor = other.isADoor;
+            this.i = other.i;
+            this.j = other.j;
+            this.howManyHoomansWereThere = other.howManyHoomansWereThere;
+            this.floorValue = other.floorValue;
+        }
 
         internal static Cell[][] DeepCopy(Cell[][] cells) {
             Cell[][] copyCells = new Cell[cells.Length][];
             for (int ii = 0; ii < cells.Length; ii++) {
                 copyCells[ii] = new Cell[cells[0].Length];
                 for (int jj = 0; jj < cells[0].Length; jj++) {
-                    copyCells[ii][jj] = new Cell(cells[ii][jj].i, cells[ii][jj].j, cells[ii][jj].floorValue);
-                    copyCells[ii][jj].x = cells[ii][jj].x;
+                    copyCells[ii][jj] = new Cell(cells[ii][jj]);
+                    /*copyCells[ii][jj].x = cells[ii][jj].x;
                     copyCells[ii][jj].y = cells[ii][jj].y;
                     copyCells[ii][jj].isAWall = cells[ii][jj].isAWall;
                     copyCells[ii][jj].isAPerson = cells[ii][jj].isAPerson;
                     copyCells[ii][jj].isADoor = cells[ii][jj].isADoor;
-                    copyCells[ii][jj].howManyHoomansWereThere = cells[ii][jj].howManyHoomansWereThere;
+                    copyCells[ii][jj].howManyHoomansWereThere = cells[ii][jj].howManyHoomansWereThere;*/
                 }
             }
             return copyCells;

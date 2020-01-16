@@ -3,6 +3,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -58,6 +59,14 @@ namespace Ha {
             int chartHeight = (int)chart1.ActualHeight;
             double resolution = 96d;
 
+          /*  Bitmap bmpScreenshot = new Bitmap(chartWidth, chartHeight, PixelFormats.Pbgra32);
+            // Create a graphics object from the bitmap
+            Graphics gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+            // Take the screenshot from the upper left corner to the right bottom corner
+            gfxScreenshot.CopyFromScreen(10, 35, 0, 0);*/
+
+
+
             string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
 
             System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
@@ -73,6 +82,7 @@ namespace Ha {
                 encoder.Frames.Add(BitmapFrame.Create(bmp));
                 encoder.Save(stream);
 
+                
                 MessageBox.Show("Graph has been saved!", "Saving information");
             }
         }
