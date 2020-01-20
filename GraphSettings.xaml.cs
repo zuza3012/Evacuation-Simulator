@@ -22,7 +22,11 @@ namespace Ha {
         }
 
         private void SetParameters(object sender, RoutedEventArgs e) {
-            DialogResult = true;
+            if (TbNumberOfEvacuations.Text != "0") {
+                DialogResult = true;
+            } else {
+                MessageBox.Show("Number of evacuations shouldn't be equal to 0.", "Error");
+            }
         }
     }
 

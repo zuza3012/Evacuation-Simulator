@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace Ha {
     /// <summary>
@@ -22,7 +10,15 @@ namespace Ha {
         }
 
         private void SetParameters(object sender, RoutedEventArgs e) {
-            DialogResult = true;
+            if (MainWindow.CheckConvertion(panicParameterTB.Text)) {
+                if (double.Parse(panicParameterTB.Text) < 1 && double.Parse(panicParameterTB.Text) > 0) {
+                    DialogResult = true;
+                } else {
+                    MessageBox.Show("Panic parameter shouldn't be greater than 1 or less than 0.");
+                }
+            } else {
+                MessageBox.Show("Don't.");
+            }
         }
     }
 }

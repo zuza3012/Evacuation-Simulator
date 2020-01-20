@@ -39,11 +39,11 @@ namespace Ha {
             Console.WriteLine("Application has been closed");
         }
 
-       
-        private bool CheckConvertion(string name) {
-            int number;
 
-            bool success = Int32.TryParse(name, out number);
+        public static bool CheckConvertion(string name) {
+            double number;
+
+            bool success = Double.TryParse(name, out number);
             if (success) {
                 return true;
             } else {
@@ -52,11 +52,15 @@ namespace Ha {
                 return false;
             }
         }
-       
+
         private void ParametersDialog(object sender, RoutedEventArgs e) {
             var dialog = new ParameterWindow();
-            if (dialog.ShowDialog() == true) {
-                panicParameter = Double.Parse(dialog.panicParameterTB.Text);
+            if (CheckConvertion(dialog.panicParameterTB.Text)) {
+                if (dialog.ShowDialog() == true) {
+                    panicParameter = Double.Parse(dialog.panicParameterTB.Text);
+                }
+            } else {
+                MessageBox.Show("Don't.");
             }
         }
 
@@ -70,42 +74,44 @@ namespace Ha {
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
                 switch (result) {
                     case MessageBoxResult.Yes:
-                        Cell.GenerateField(cells);
+                        if (Cell.FindHoomans(cells).Count != 0) {
+                            Cell.GenerateField(cells);
 
-                        obst.IsEnabled = false;
-                        door.IsEnabled = false;
-                        people.IsEnabled = false;
-                        evacuateHoomansBtn.IsEnabled = true;
-                        evacuateHoomansNTimesBtn.IsEnabled = true;
-                        multiplePanicParametersButton.IsEnabled = true;
-                        
-                        if (Cell.DoorsCount(cells) == 1)
-                            widerDoorButton.IsEnabled = true;
+                            obst.IsEnabled = false;
+                            door.IsEnabled = false;
+                            people.IsEnabled = false;
+                            evacuateHoomansBtn.IsEnabled = true;
+                            evacuateHoomansNTimesBtn.IsEnabled = true;
+                            multiplePanicParametersButton.IsEnabled = true;
 
-                        Label floorValueLabel;
-                        for (int i = 0; i < cols; i++) {
-                            for (int j = 0; j < rows; j++) {
+                            if (Cell.DoorsCount(cells) == 1)
+                                widerDoorButton.IsEnabled = true;
 
-                                floorValueLabel = new Label {
-                                    Content = cells[i][j].floorValue,
-                                    Width = step,
-                                    Height = step
-                                };
+                            Label floorValueLabel;
+                            for (int i = 0; i < cols; i++) {
+                                for (int j = 0; j < rows; j++) {
 
-                                if (step <= 100) {
-                                    floorValueLabel.FontSize = step * 3 / 12;
-                                } else {
-                                    floorValueLabel.FontSize = step * 3 / 16;
+                                    floorValueLabel = new Label {
+                                        Content = cells[i][j].floorValue,
+                                        Width = step,
+                                        Height = step
+                                    };
+
+                                    if (step <= 100) {
+                                        floorValueLabel.FontSize = step * 3 / 12;
+                                    } else {
+                                        floorValueLabel.FontSize = step * 3 / 16;
+                                    }
+
+                                    Canvas.SetLeft(floorValueLabel, cells[i][j].x);
+                                    Canvas.SetTop(floorValueLabel, cells[i][j].y);
+                                    canvas.Children.Add(floorValueLabel);
                                 }
-
-                                Canvas.SetLeft(floorValueLabel, cells[i][j].x);
-                                Canvas.SetTop(floorValueLabel, cells[i][j].y);
-                                canvas.Children.Add(floorValueLabel);
                             }
+                            evacuateHoomansBtn.IsEnabled = true;
+                        } else {
+                            MessageBox.Show("Who are we going to evacuate?");
                         }
-                        evacuateHoomansBtn.IsEnabled = true;
-
-                        //Cell.FindHoomans(cells);
                         break;
                     case MessageBoxResult.No:
                         break;
@@ -116,7 +122,7 @@ namespace Ha {
         }
 
         private string SaveArrayToFile(string fileName, double[,] array, string text) {
-           
+
             System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
             if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 
@@ -125,48 +131,17 @@ namespace Ha {
                 using (StreamWriter file = new StreamWriter(dest, false)) {
                     for (int j = 0; j < array.GetLength(1); j++) {
                         for (int i = 0; i < array.GetLength(0); i++) {
-                            file.Write(array[i,j].ToString() + '\t');
+                            file.Write(array[i, j].ToString() + '\t');
                         }
                         file.Write("\n");
                     }
                     MessageBox.Show("Data has been saved!", text);
                 }
-
+                return openfiledalog.SelectedPath;
+            } else {
+                return null;
             }
-            return openfiledalog.SelectedPath;
-        }
-
-        private void SaveSimulatedData(object sender, RoutedEventArgs e) {
-
-            String fileName = DateTime.Now.ToString("h/mm/ss_tt");
-            System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
-            if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-
-                var dest = Path.Combine(openfiledalog.SelectedPath, "floor_" + fileName + ".txt");
-
-                using (StreamWriter file = new StreamWriter(dest, false)) {
-                    for (int j = 0; j < rows; j++) {
-                        for (int i = 0; i < cols; i++) {
-                            file.Write(cells[i][j].floorValue.ToString() + '\t');
-                        }
-                        file.Write("\n");
-                    }
-                    dest = Path.Combine(openfiledalog.SelectedPath, "hoomans_" + fileName + ".txt");
-                    using (StreamWriter file2 = new StreamWriter(dest, false)) {
-                        file2.Write(buffer);
-                    }
-
-                    dest = Path.Combine(openfiledalog.SelectedPath, "density_" + fileName + ".txt");
-                    using (StreamWriter file3 = new StreamWriter(dest, false)) {
-                        for (int j = 0; j < rows; j++) {
-                            for (int i = 0; i < cols; i++) {
-                                file3.Write(cells[i][j].howManyHoomansWereThere.ToString() + '\t');
-                            }
-                            file3.Write("\n");
-                        }
-                    }
-                }
-            }
+            
         }
 
         int EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {       //ewakuuje wszystkich i zwraca ilosc iteracji potrzebnych do ewakuacji
@@ -192,7 +167,7 @@ namespace Ha {
                 counter++;
                 numberOfIterations++;
                 buffer += "Time: " + counter.ToString() + " iterations" + '\n';
-                
+
                 Cell evacuateTo;
                 foreach (Cell cell in listOfHoomans) {
                     cell.howManyHoomansWereThere += 1;
@@ -249,7 +224,6 @@ namespace Ha {
             }
             if (!evacuationWorker.IsBusy) {
                 evacuationWorker.RunWorkerAsync();
-                saveItem.IsEnabled = true;
             }
         }
 
@@ -257,21 +231,25 @@ namespace Ha {
 
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
-                numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
-                panicParameter = Double.Parse(dialog.panicParTb.Text);
+                if (CheckConvertion(dialog.numevacTb.Text) && CheckConvertion(dialog.panicParTb.Text)) {
+                    numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
+                    panicParameter = Double.Parse(dialog.panicParTb.Text);
 
-                dialog.Close();
-                if (null == calcWorker) {
-                    calcWorker = new BackgroundWorker();
-                    calcWorker.DoWork += new DoWorkEventHandler(calcWorker_DoWork);
-                    calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(calcWorker_RunWorkerCompleted);
-                    calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
-                    calcWorker.WorkerReportsProgress = true;
-                    calcWorker.WorkerSupportsCancellation = true;
-                }
-                if (!calcWorker.IsBusy) {
-                    calcWorker.RunWorkerAsync();
-                    pop.Show();
+                    dialog.Close();
+                    if (null == calcWorker) {
+                        calcWorker = new BackgroundWorker();
+                        calcWorker.DoWork += new DoWorkEventHandler(calcWorker_DoWork);
+                        calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(calcWorker_RunWorkerCompleted);
+                        calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
+                        calcWorker.WorkerReportsProgress = true;
+                        calcWorker.WorkerSupportsCancellation = true;
+                    }
+                    if (!calcWorker.IsBusy) {
+                        calcWorker.RunWorkerAsync();
+                        pop.Show();
+                    }
+                } else {
+                    MessageBox.Show("Don't");
                 }
             }
         }
@@ -281,21 +259,25 @@ namespace Ha {
 
             var dialog = new GraphSettings();
             if (dialog.ShowDialog() == true) {
-                numberOfEvacuations = Int32.Parse(dialog.TbNumberOfEvacuations.Text);
-                panicStep = Double.Parse(dialog.TbStep.Text);
+                if (CheckConvertion(dialog.TbNumberOfEvacuations.Text) && CheckConvertion(dialog.TbStep.Text)) {
+                    numberOfEvacuations = Int32.Parse(dialog.TbNumberOfEvacuations.Text);
+                    panicStep = Double.Parse(dialog.TbStep.Text);
 
-                dialog.Close();
+                    dialog.Close();
 
-                calcWorker = new BackgroundWorker();
-                calcWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
-                calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(panicEvacuationWorker_RunWorkerCompleted);
-                calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
-                calcWorker.WorkerReportsProgress = true;
-                calcWorker.WorkerSupportsCancellation = true;
+                    calcWorker = new BackgroundWorker();
+                    calcWorker.DoWork += new DoWorkEventHandler(panicEvacuationWorker_DoWork);
+                    calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(panicEvacuationWorker_RunWorkerCompleted);
+                    calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
+                    calcWorker.WorkerReportsProgress = true;
+                    calcWorker.WorkerSupportsCancellation = true;
 
-                if (!calcWorker.IsBusy) {
-                    calcWorker.RunWorkerAsync();
-                    pop.Show();
+                    if (!calcWorker.IsBusy) {
+                        calcWorker.RunWorkerAsync();
+                        pop.Show();
+                    }
+                } else {
+                    MessageBox.Show("Don't");
                 }
             }
         }
@@ -303,22 +285,24 @@ namespace Ha {
         private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
-                numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
-                panicParameter = Double.Parse(dialog.panicParTb.Text);
-                Console.WriteLine("panic parameter: " + panicParameter);
+                if (CheckConvertion(dialog.numevacTb.Text) && CheckConvertion(dialog.panicParTb.Text)) {
+                    numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
+                    panicParameter = Double.Parse(dialog.panicParTb.Text);
+                    dialog.Close();
 
-                dialog.Close();
+                    calcWorker = new BackgroundWorker();
+                    calcWorker.DoWork += new DoWorkEventHandler(widerDoor_DoWork);
+                    calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(widerDoor_RunWorkerCompleted);
+                    calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
+                    calcWorker.WorkerReportsProgress = true;
+                    calcWorker.WorkerSupportsCancellation = true;
 
-                calcWorker = new BackgroundWorker();
-                calcWorker.DoWork += new DoWorkEventHandler(widerDoor_DoWork);
-                calcWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(widerDoor_RunWorkerCompleted);
-                calcWorker.ProgressChanged += new ProgressChangedEventHandler(calcWorker_ProgressChanged);
-                calcWorker.WorkerReportsProgress = true;
-                calcWorker.WorkerSupportsCancellation = true;
-
-                if (!calcWorker.IsBusy) {
-                    calcWorker.RunWorkerAsync();
-                    pop.Show();
+                    if (!calcWorker.IsBusy) {
+                        calcWorker.RunWorkerAsync();
+                        pop.Show();
+                    }
+                } else {
+                    MessageBox.Show("Don't.");
                 }
             }
         }

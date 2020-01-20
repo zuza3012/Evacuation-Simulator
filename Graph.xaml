@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
         <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,0,0" BorderBrush="#FFFFFFF8" OpacityMask="White">
             <MenuItem  Header="File" Margin="2,0,0,0">
-                <MenuItem x:Name="saveGraph" Header="Save Garph"  IsEnabled="True" Click="SaveGraph_Click"/>
+                <MenuItem x:Name="saveGraph" Header="Save Graph"  IsEnabled="True" Click="SaveGraph_Click"/>
             </MenuItem>
         </Menu>
         

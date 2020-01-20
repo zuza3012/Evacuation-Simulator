@@ -1,7 +1,6 @@
 ﻿using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -10,7 +9,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MessageBox = System.Windows.MessageBox;
 
 namespace Ha {
     /// <summary>
@@ -24,9 +22,9 @@ namespace Ha {
             InitializeComponent();
             if (k == 1) {
 
-                DrawChart(chart1, MainWindow.path, "The most mind - blowing Evacuation Graph", "panic parameter", "average evacuation time");
+                DrawChart(chart1, MainWindow.path, "Relationship between evacuation time and panic parameter", "Panic parameter", "Average evacuation time");
             } else {
-                DrawChart(chart1, MainWindow.path2, "Funny Graph", "door's width", "average evacuation time");
+                DrawChart(chart1, MainWindow.path2, "Relationship between evacuation time and door's width", "Door's width", "Average evacuation time");
             }
         }
 
@@ -54,37 +52,35 @@ namespace Ha {
         }
 
         private void SaveGraph_Click(object sender, RoutedEventArgs e) {
-
-            int chartWidth = (int)chart1.ActualWidth;
-            int chartHeight = (int)chart1.ActualHeight;
-            double resolution = 96d;
-
-          /*  Bitmap bmpScreenshot = new Bitmap(chartWidth, chartHeight, PixelFormats.Pbgra32);
-            // Create a graphics object from the bitmap
-            Graphics gfxScreenshot = Graphics.FromImage(bmpScreenshot);
-            // Take the screenshot from the upper left corner to the right bottom corner
-            gfxScreenshot.CopyFromScreen(10, 35, 0, 0);*/
-
-
-
-            string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
-
-            System.Windows.Forms.FolderBrowserDialog openfiledalog = new System.Windows.Forms.FolderBrowserDialog();
-            if (openfiledalog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-
-                var dest = Path.Combine(openfiledalog.SelectedPath, fileName + ".png");
-
-                FileStream stream = new FileStream(dest, FileMode.Create);
-                RenderTargetBitmap bmp = new RenderTargetBitmap(chartWidth, chartHeight, resolution, resolution, PixelFormats.Pbgra32);
-                bmp.Render(chart1);
-
-                BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bmp));
-                encoder.Save(stream);
-
-                
-                MessageBox.Show("Graph has been saved!", "Saving information");
+            System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                ControlToBmp(chart1, 900, 900).Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
             }
+        }
+
+        public static Bitmap ControlToBmp(Visual target, double dpiX, double dpiY) {
+            if (target == null) {
+                return null;
+            }
+            // render control content
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(bounds.Width * dpiX / 96.0),
+                                                            (int)(bounds.Height * dpiY / 96.0),
+                                                            dpiX,
+                                                            dpiY,
+                                                            PixelFormats.Pbgra32);
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext ctx = dv.RenderOpen()) {
+                VisualBrush vb = new VisualBrush(target);
+                ctx.DrawRectangle(vb, null, new Rect(new System.Windows.Point(), bounds.Size));
+            }
+            rtb.Render(dv);
+
+            MemoryStream stream = new MemoryStream();
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+            encoder.Save(stream);
+            return new Bitmap(stream);
         }
 
         private void DrawChart(CartesianChart chart, string filePath, string chartTitle, string xTitle, string yTitle) {

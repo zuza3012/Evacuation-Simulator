@@ -19,15 +19,15 @@ namespace Ha {
         }
 
         public Cell(Cell other) {
-            this.x = other.x;
-            this.y = other.y;
-            this.isAWall = other.isAWall;
-            this.isAPerson = other.isAPerson;
-            this.isADoor = other.isADoor;
-            this.i = other.i;
-            this.j = other.j;
-            this.howManyHoomansWereThere = other.howManyHoomansWereThere;
-            this.floorValue = other.floorValue;
+            x = other.x;
+            y = other.y;
+            isAWall = other.isAWall;
+            isAPerson = other.isAPerson;
+            isADoor = other.isADoor;
+            i = other.i;
+            j = other.j;
+            howManyHoomansWereThere = other.howManyHoomansWereThere;
+            floorValue = other.floorValue;
         }
 
         internal static Cell[][] DeepCopy(Cell[][] cells) {
@@ -36,12 +36,6 @@ namespace Ha {
                 copyCells[ii] = new Cell[cells[0].Length];
                 for (int jj = 0; jj < cells[0].Length; jj++) {
                     copyCells[ii][jj] = new Cell(cells[ii][jj]);
-                    /*copyCells[ii][jj].x = cells[ii][jj].x;
-                    copyCells[ii][jj].y = cells[ii][jj].y;
-                    copyCells[ii][jj].isAWall = cells[ii][jj].isAWall;
-                    copyCells[ii][jj].isAPerson = cells[ii][jj].isAPerson;
-                    copyCells[ii][jj].isADoor = cells[ii][jj].isADoor;
-                    copyCells[ii][jj].howManyHoomansWereThere = cells[ii][jj].howManyHoomansWereThere;*/
                 }
             }
             return copyCells;
@@ -49,7 +43,7 @@ namespace Ha {
 
         internal static int DoorsCount(Cell[][] cells) {
             int count = 0;
-            for(int j = 0; j < cells[0].Length; j++) {
+            for (int j = 0; j < cells[0].Length; j++) {
                 for (int i = 0; i < cells.Length; i++) {
                     if (cells[i][j].isADoor) {
                         count++;
@@ -88,17 +82,17 @@ namespace Ha {
             }
 
             if (jD == 0 || jD == (rows - 1)) {
-               int counterLeft = 1, counterRight = 1;
-                
+                int counterLeft = 1, counterRight = 1;
+
                 for (int c = 0; c < cols - 3; c++) {
                     Cell[][] copyOfCells = DeepCopy(cellsWithWiderDoors[c]);
                     if (iD - counterLeft > 0) {
-                            copyOfCells[iD - counterLeft][jD].isAWall = false;
-                            copyOfCells[iD - counterLeft][jD].isADoor = true;
+                        copyOfCells[iD - counterLeft][jD].isAWall = false;
+                        copyOfCells[iD - counterLeft][jD].isADoor = true;
                         counterLeft++;
                     } else if (iD + counterRight < rows - 1) {
-                            copyOfCells[iD + counterRight][jD].isAWall = false;
-                            copyOfCells[iD + counterRight][jD].isADoor = true;
+                        copyOfCells[iD + counterRight][jD].isAWall = false;
+                        copyOfCells[iD + counterRight][jD].isADoor = true;
                         counterRight++;
                     }
                     GenerateField(copyOfCells);
@@ -123,9 +117,6 @@ namespace Ha {
                     cellsWithWiderDoors.Add(copyOfCells);
                 }
             }
-
-
-
             return cellsWithWiderDoors;
         }
 
@@ -277,9 +268,9 @@ namespace Ha {
         }
 
         internal static void GenerateField(Cell[][] cells) {
+
             int cols = cells.Length;
             int rows = cells[0].Length;
-
             List<Cell> listOfDoors = new List<Cell>();
             for (int i = 0; i < cols; i++) {
                 for (int j = 0; j < rows; j++) {
@@ -324,7 +315,6 @@ namespace Ha {
                 copyOfCells[door.i][door.j].floorValue = 0;
 
                 listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Add(copyOfCells);
-
             }
 
             if (listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Count != 0) {
@@ -334,11 +324,11 @@ namespace Ha {
                     int pos = listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.IndexOf(copyOfCells);
                     iD = listOfDoors.ElementAt(pos).i;
                     jD = listOfDoors.ElementAt(pos).j;
-                    //System.Console.WriteLine("Drzwi:" + "(" + iD + ", " + jD + ")");
-
 
                     List<Cell> listOfCells = new List<Cell>();
                     //tu bendzie jagiź algorydm
+
+                    #region dodawanie pierwszych drzwi
                     if (jD == rows - 1) {                       //jesli drzwi na dole
                         copyOfCells[iD][jD - 1].floorValue = 1;
                         listOfCells.Add(copyOfCells[iD][jD - 1]);
@@ -392,26 +382,26 @@ namespace Ha {
                             listOfCells.Add(copyOfCells[iD - 1][jD + 1]);
                         }
                     }
+                    #endregion
 
                     while (listOfCells.Count < (rows - 2) * (cols - 2)) {
-
-                        foreach (Cell cell in listOfCells) {
-                            if (!cell.isAWall) {
-                                CheckCells(cell.i, cell.j, copyOfCells);
-                            }
-                        }
-
-                        for (int i = 1; i < cols - 1; i++)
-                            for (int j = 1; j < rows - 1; j++)
-                                if (copyOfCells[i][j].floorValue != 666 && !listOfCells.Contains(copyOfCells[i][j])) {
-                                    listOfCells.Add(copyOfCells[i][j]);
+                       
+                            foreach (Cell cell in listOfCells) {
+                                if (!cell.isAWall) {
+                                    CheckCells(cell.i, cell.j, copyOfCells);
                                 }
+                            }
+
+                            for (int i = 1; i < cols - 1; i++)
+                                for (int j = 1; j < rows - 1; j++)
+                                    if (copyOfCells[i][j].floorValue != 666 && !listOfCells.Contains(copyOfCells[i][j])) {
+                                        listOfCells.Add(copyOfCells[i][j]);
+                                    }
+                            copyOfCells[iD][jD].floorValue = 0;
                     }
-                    copyOfCells[iD][jD].floorValue = 0;
                 }
 
                 foreach (Cell[][] copyOfCells in listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor) {
-
                     for (int i = 0; i < cols; i++) {
                         for (int j = 0; j < rows; j++) {
                             if (copyOfCells[i][j].floorValue <= cells[i][j].floorValue) {

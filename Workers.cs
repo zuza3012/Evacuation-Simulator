@@ -86,9 +86,12 @@ namespace Ha {
             pop.Hide();
             MessageBox.Show("Simulations completed! ", "You are the real hero!");
             string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
-            path = SaveArrayToFile(fileName + ".txt", data, "Simulations saved") + @"\" + fileName + ".txt";
-            Graph graph = new Graph(1);
-            graph.Show();
+            string test = SaveArrayToFile(fileName + ".txt", data, "Simulations saved");
+            if (test != null) {
+                path = test + @"\" + fileName + ".txt";
+                Graph graph = new Graph(1);
+                graph.Show();
+            }
         }
 
         private void widerDoor_DoWork(object sender, DoWorkEventArgs e) {
@@ -99,7 +102,6 @@ namespace Ha {
 
             int counter = 0;
             foreach (Cell[][] copy in cellsWithWiderDoors) {
-                Console.WriteLine("Foreeach [1][3] isPerson? " + copy[1][3].isAPerson);
                 double sum = 0;
                 for (int k = 0; k < numberOfEvacuations; k++) {
                     Cell[][] copyOfCopy = Cell.DeepCopy(copy);
@@ -118,9 +120,12 @@ namespace Ha {
             MessageBox.Show("Data has been created!", "You are the real hero!");
             
             string fileName = "Data_" + DateTime.Now.ToString("h/mm/ss_tt");
-            path2 = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved") + @"\" + fileName + ".txt";
-            Graph graph = new Graph(2);
-            graph.Show();
+            string test = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved");
+            if (test != null) {
+                path2 = test + @"\" + fileName + ".txt";
+                Graph graph = new Graph(2);
+                graph.Show();
+            }
         }
     }
 }
