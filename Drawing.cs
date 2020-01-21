@@ -116,7 +116,7 @@ namespace Ha {
             multiplePanicParametersButton.IsEnabled = false;
             canvas.Children.Clear();
 
-            if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
+            if (CheckConvertion(rowTb.Text,true) && CheckConvertion(colTb.Text,true) == true) {
                 rows = Convert.ToInt32(rowTb.Text);
                 cols = Convert.ToInt32(colTb.Text);
 
@@ -181,7 +181,7 @@ namespace Ha {
         }
 
         private void DrawRect(object sender, MouseButtonEventArgs e) { //rysowanie obiektu w kwadraciku na ktory sie kliknie
-            if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
+            if (CheckConvertion(rowTb.Text,true) && CheckConvertion(colTb.Text,true) == true) {
                 Point startPoint = e.GetPosition(canvas);
 
                 Point converted = new Point {

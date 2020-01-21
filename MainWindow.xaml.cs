@@ -40,10 +40,15 @@ namespace Ha {
         }
 
 
-        public static bool CheckConvertion(string name) {
-            double number;
-
-            bool success = Double.TryParse(name, out number);
+        public static bool CheckConvertion(string name, bool type) {
+            double numberdbl;
+            int numberint;
+            bool success;
+            if (type) {
+                success = int.TryParse(name, out numberint);
+            } else {
+                success = Double.TryParse(name, out numberdbl);
+            }
             if (success) {
                 return true;
             } else {
@@ -55,7 +60,7 @@ namespace Ha {
 
         private void ParametersDialog(object sender, RoutedEventArgs e) {
             var dialog = new ParameterWindow();
-            if (CheckConvertion(dialog.panicParameterTB.Text)) {
+            if (CheckConvertion(dialog.panicParameterTB.Text,false)) {
                 if (dialog.ShowDialog() == true) {
                     panicParameter = Double.Parse(dialog.panicParameterTB.Text);
                 }
@@ -69,7 +74,7 @@ namespace Ha {
         #region Simulations & Heavy Lifting
 
         private void GenerateFloorField(object sender, RoutedEventArgs e) {
-            if (CheckConvertion(rowTb.Text) && CheckConvertion(colTb.Text) == true) {
+            if (CheckConvertion(rowTb.Text, true) && CheckConvertion(colTb.Text, true) == true) {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to generate the floor field?"
                 + '\n' + "You will be not allowed to add more stuff to this miserable world you just created.", "Confirm", MessageBoxButton.YesNo);
                 switch (result) {
@@ -231,7 +236,7 @@ namespace Ha {
 
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
-                if (CheckConvertion(dialog.numevacTb.Text) && CheckConvertion(dialog.panicParTb.Text)) {
+                if (CheckConvertion(dialog.numevacTb.Text, true) && CheckConvertion(dialog.panicParTb.Text, false)) {
                     numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
                     panicParameter = Double.Parse(dialog.panicParTb.Text);
 
@@ -259,7 +264,7 @@ namespace Ha {
 
             var dialog = new GraphSettings();
             if (dialog.ShowDialog() == true) {
-                if (CheckConvertion(dialog.TbNumberOfEvacuations.Text) && CheckConvertion(dialog.TbStep.Text)) {
+                if (CheckConvertion(dialog.TbNumberOfEvacuations.Text, true) && CheckConvertion(dialog.TbStep.Text, false)) {
                     numberOfEvacuations = Int32.Parse(dialog.TbNumberOfEvacuations.Text);
                     panicStep = Double.Parse(dialog.TbStep.Text);
 
@@ -285,7 +290,7 @@ namespace Ha {
         private void widerDoorButton_Click(object sender, RoutedEventArgs e) {
             var dialog = new MoreCalculationParameters();
             if (dialog.ShowDialog() == true) {
-                if (CheckConvertion(dialog.numevacTb.Text) && CheckConvertion(dialog.panicParTb.Text)) {
+                if (CheckConvertion(dialog.numevacTb.Text, true) && CheckConvertion(dialog.panicParTb.Text, false)) {
                     numberOfEvacuations = Int32.Parse(dialog.numevacTb.Text);
                     panicParameter = Double.Parse(dialog.panicParTb.Text);
                     dialog.Close();

@@ -17,8 +17,13 @@ namespace Ha {
     /// Interaction logic for Window3.xaml
     /// </summary>
     public partial class Popup : Window {
+        public bool cancel = false;
         public Popup() {
             InitializeComponent();
+        }
+
+        private void cancelButton_Click(object sender, RoutedEventArgs e) {
+            cancel = true;
         }
     }
 }

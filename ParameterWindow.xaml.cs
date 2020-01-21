@@ -10,7 +10,7 @@ namespace Ha {
         }
 
         private void SetParameters(object sender, RoutedEventArgs e) {
-            if (MainWindow.CheckConvertion(panicParameterTB.Text)) {
+            if (MainWindow.CheckConvertion(panicParameterTB.Text,false)) {
                 if (double.Parse(panicParameterTB.Text) < 1 && double.Parse(panicParameterTB.Text) > 0) {
                     DialogResult = true;
                 } else {

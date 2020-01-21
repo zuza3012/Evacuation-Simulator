@@ -11,7 +11,7 @@ namespace Ha {
     public partial class MainWindow : Window {
         void evacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
             numberOfIterations = EvacuationCalc(true, cells, panicParameter);
-            
+
             evacuationWorker.ReportProgress(100);
         }
 
@@ -42,9 +42,14 @@ namespace Ha {
         void calcWorker_DoWork(object sender, DoWorkEventArgs e) {
             double sum = 0;
             for (int i = 0; i < numberOfEvacuations; i++) {
-                Cell[][] copyCells = Cell.DeepCopy(cells);
-                sum += EvacuationCalc(false, copyCells, panicParameter);
-                calcWorker.ReportProgress((int)(100 * i / (double)numberOfEvacuations));
+                if (!pop.cancel) {
+                    Cell[][] copyCells = Cell.DeepCopy(cells);
+                    sum += EvacuationCalc(false, copyCells, panicParameter);
+                    calcWorker.ReportProgress((int)(100 * i / (double)numberOfEvacuations));
+                } else {
+                    calcWorker.CancelAsync();
+                    return;
+                }
             }
 
             averageTime = sum / numberOfEvacuations;
@@ -57,7 +62,12 @@ namespace Ha {
 
         void calcWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Hide();
-            MessageBox.Show("Simulations completed! " + "\n" + "Average evacuation time: " + averageTime + " iterations", "You are the real hero!");
+            if (pop.cancel) {
+                MessageBox.Show("Simulations have been cancelled successfully");
+                pop.cancel = false;
+            } else {
+                MessageBox.Show("Simulations completed! " + "\n" + "Average evacuation time: " + averageTime + " iterations", "You are the real hero!");
+            }
         }
 
 
@@ -69,14 +79,19 @@ namespace Ha {
             calcWorker.ReportProgress(0);
             for (int j = 0; j < k; j++) {
                 double sum = 0;
-                for (int i = 0; i < numberOfEvacuations; i++) {
-                    Cell[][] copyCells = Cell.DeepCopy(cells);
-                    sum += EvacuationCalc(false, copyCells, panicParameter);
-                    calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
+                if (!pop.cancel) {
+                    for (int i = 0; i < numberOfEvacuations; i++) {
+                        Cell[][] copyCells = Cell.DeepCopy(cells);
+                        sum += EvacuationCalc(false, copyCells, panicParameter);
+                        calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
+                    }
+                    data[1, j] = sum / numberOfEvacuations;
+                    data[0, j] = panicParameter;
+                    panicParameter += panicStep;
+                } else {
+                    calcWorker.CancelAsync();
+                    return;
                 }
-                data[1, j] = sum / numberOfEvacuations;
-                data[0, j] = panicParameter;
-                panicParameter += panicStep;
             }
             calcWorker.ReportProgress(100);
         }
@@ -84,13 +99,18 @@ namespace Ha {
 
         private void panicEvacuationWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Hide();
-            MessageBox.Show("Simulations completed! ", "You are the real hero!");
-            string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
-            string test = SaveArrayToFile(fileName + ".txt", data, "Simulations saved");
-            if (test != null) {
-                path = test + @"\" + fileName + ".txt";
-                Graph graph = new Graph(1);
-                graph.Show();
+            if (pop.cancel) {
+                MessageBox.Show("Simulations have been cancelled successfully");
+                pop.cancel = false;
+            } else {
+                MessageBox.Show("Simulations completed! ", "You are the real hero!");
+                string fileName = "graphData_" + DateTime.Now.ToString("h/mm/ss_tt");
+                string test = SaveArrayToFile(fileName + ".txt", data, "Simulations saved");
+                if (test != null) {
+                    path = test + @"\" + fileName + ".txt";
+                    Graph graph = new Graph(1);
+                    graph.Show();
+                }
             }
         }
 
@@ -98,15 +118,21 @@ namespace Ha {
             List<Cell[][]> cellsWithWiderDoors = Cell.WiderDoor(cells);
             int l = cellsWithWiderDoors.Count;
 
-            doorData = new double[2,l];
+            doorData = new double[2, l];
 
             int counter = 0;
             foreach (Cell[][] copy in cellsWithWiderDoors) {
                 double sum = 0;
                 for (int k = 0; k < numberOfEvacuations; k++) {
-                    Cell[][] copyOfCopy = Cell.DeepCopy(copy);
-                    sum += EvacuationCalc(false, copyOfCopy, panicParameter);
-                    calcWorker.ReportProgress((int)(100 * (double)counter / l + k));
+                    if (!pop.cancel) {
+                        Cell[][] copyOfCopy = Cell.DeepCopy(copy);
+                        sum += EvacuationCalc(false, copyOfCopy, panicParameter);
+                        calcWorker.ReportProgress((int)(100 * (double)counter / l + k));
+                    } else {
+                        calcWorker.CancelAsync();
+                        pop.cancel = false;
+                        return;
+                    }
                 }
                 doorData[0, counter] = counter + 1;
                 doorData[1, counter] = sum / numberOfEvacuations;
@@ -117,14 +143,19 @@ namespace Ha {
 
         private void widerDoor_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Hide();
-            MessageBox.Show("Data has been created!", "You are the real hero!");
-            
-            string fileName = "Data_" + DateTime.Now.ToString("h/mm/ss_tt");
-            string test = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved");
-            if (test != null) {
-                path2 = test + @"\" + fileName + ".txt";
-                Graph graph = new Graph(2);
-                graph.Show();
+            if (pop.cancel) {
+                MessageBox.Show("Simulations have been cancelled successfully");
+                pop.cancel = false;
+            } else {
+                MessageBox.Show("Data has been created!", "You are the real hero!");
+
+                string fileName = "Data_" + DateTime.Now.ToString("h/mm/ss_tt");
+                string test = SaveArrayToFile(fileName + ".txt", doorData, "Simulations saved");
+                if (test != null) {
+                    path2 = test + @"\" + fileName + ".txt";
+                    Graph graph = new Graph(2);
+                    graph.Show();
+                }
             }
         }
     }
