@@ -268,7 +268,7 @@ namespace Ha {
         }
 
         internal static void GenerateField(Cell[][] cells) {
-
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             int cols = cells.Length;
             int rows = cells[0].Length;
             List<Cell> listOfDoors = new List<Cell>();
@@ -280,6 +280,7 @@ namespace Ha {
                     }
                 }
             }
+            System.Console.WriteLine("jestem tutaj1");
             List<Cell[][]> listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor = new List<Cell[][]>();
             int iD = 0, jD = 0;
 
@@ -316,7 +317,7 @@ namespace Ha {
 
                 listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Add(copyOfCells);
             }
-
+            System.Console.WriteLine("jestem tutaj2");
             if (listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor.Count != 0) {
 
                 foreach (Cell[][] copyOfCells in listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor) {
@@ -383,9 +384,12 @@ namespace Ha {
                         }
                     }
                     #endregion
-
                     while (listOfCells.Count < (rows - 2) * (cols - 2)) {
-                       
+                        if (watch.ElapsedMilliseconds > 1000) {
+                            System.Windows.MessageBox.Show("Something went terribly wrong.");
+                            return;
+                        } else {
+                            System.Console.WriteLine("cos pyklo");
                             foreach (Cell cell in listOfCells) {
                                 if (!cell.isAWall) {
                                     CheckCells(cell.i, cell.j, copyOfCells);
@@ -398,9 +402,10 @@ namespace Ha {
                                         listOfCells.Add(copyOfCells[i][j]);
                                     }
                             copyOfCells[iD][jD].floorValue = 0;
+                        }
                     }
                 }
-
+                System.Console.WriteLine("jestem tutaj tutaj");
                 foreach (Cell[][] copyOfCells in listOfFloorFieldValuesForSpecificDoorJustLikeTheyWereTheOnlyDoor) {
                     for (int i = 0; i < cols; i++) {
                         for (int j = 0; j < rows; j++) {
@@ -413,6 +418,7 @@ namespace Ha {
             } else {
                 System.Windows.MessageBox.Show("You didn't put any door here! We are going to die!", "Where is the door?");
             }
+            watch.Stop();
         }
     }
 }
