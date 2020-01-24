@@ -24,7 +24,6 @@ namespace Ha {
         double offsetX, offsetY, panicParameter = 0, averageTime = 0, panicStep = 0.1;
         double[,] data, doorData;
         Cell[][] cells, theMostImportantCopyOfCells;
-        String buffer;
         int numberOfEvacuations = 0, numberOfIterations = 0;
         Popup pop = new Popup();
         private BackgroundWorker evacuationWorker = null;
@@ -92,28 +91,22 @@ namespace Ha {
                             if (Cell.DoorsCount(cells) == 1)
                                 widerDoorButton.IsEnabled = true;
 
-                            Label floorValueLabel;
                             for (int i = 0; i < cols; i++) {
                                 for (int j = 0; j < rows; j++) {
-
-                                    floorValueLabel = new Label {
-                                        Content = cells[i][j].floorValue,
-                                        Width = step,
-                                        Height = step
-                                    };
-
-                                    if (step <= 100) {
-                                        floorValueLabel.FontSize = step * 3 / 12;
-                                    } else {
-                                        floorValueLabel.FontSize = step * 3 / 16;
+                                    DrawLabel(i, j);
                                     }
-
-                                    Canvas.SetLeft(floorValueLabel, cells[i][j].x);
-                                    Canvas.SetTop(floorValueLabel, cells[i][j].y);
-                                    canvas.Children.Add(floorValueLabel);
-                                }
                             }
                             evacuateHoomansBtn.IsEnabled = true;
+
+                            obst.IsChecked = false;
+                            door.IsChecked = false;
+                            people.IsChecked = false;
+                            Console.WriteLine(people.IsChecked);
+                            Console.WriteLine(obst.IsChecked);
+                            Console.WriteLine(door.IsChecked);
+
+
+
                         } else {
                             MessageBox.Show("Who are we going to evacuate?");
                         }
@@ -152,26 +145,11 @@ namespace Ha {
         int EvacuationCalc(bool doYouWantBackgroundWorker, Cell[][] fieldArray, double panicParameter) {       //ewakuuje wszystkich i zwraca ilosc iteracji potrzebnych do ewakuacji
             int counter = 0;
             int numberOfIterations = 0;
-            buffer += "Time:" + counter.ToString() + " iterations" + '\n';
-            for (int j = 0; j < rows; j++) {
-                for (int i = 0; i < cols; i++) {
-                    if (fieldArray[i][j].isAWall)
-                        buffer += "#";
-                    else if (fieldArray[i][j].isAPerson)
-                        buffer += "1";
-                    else if (fieldArray[i][j].isADoor)
-                        buffer += "D";
-                    else
-                        buffer += "0";
-                    buffer += '\t';
-                }
-                buffer += '\n';
-            }
+           
             List<Cell> listOfHoomans = Cell.FindHoomans(fieldArray);
             while (listOfHoomans.Count != 0) {
                 counter++;
                 numberOfIterations++;
-                buffer += "Time: " + counter.ToString() + " iterations" + '\n';
 
                 Cell evacuateTo;
                 foreach (Cell cell in listOfHoomans) {
@@ -191,20 +169,6 @@ namespace Ha {
                     Cell value = listOfHoomans[k];
                     listOfHoomans[k] = listOfHoomans[n];
                     listOfHoomans[n] = value;
-                }
-
-                for (int j = 0; j < rows; j++) {
-                    for (int i = 0; i < cols; i++) {
-                        if (fieldArray[i][j].isAWall)
-                            buffer += "#" + '\t';
-                        else if (fieldArray[i][j].isAPerson)
-                            buffer += "1" + '\t';
-                        else if (fieldArray[i][j].isADoor)
-                            buffer += "D" + '\t';
-                        else
-                            buffer += "0" + '\t';
-                    }
-                    buffer += '\n';
                 }
 
                 if (doYouWantBackgroundWorker) {

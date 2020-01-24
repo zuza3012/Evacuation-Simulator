@@ -39,50 +39,51 @@ namespace Ha {
             }
         }
 
-        private void DrawSomething(int i, int j) {
-
+        private void DrawSomething(int i, int j, bool clear) {
             Rectangle rect = new Rectangle {
                 Width = step - 2,
                 Height = step - 2,
                 Fill = Brushes.White
-            };                                                      //czyszczenie
-            Canvas.SetLeft(rect, i * step + offsetX + 1);
-            Canvas.SetTop(rect, j * step + offsetY + 1);
-            canvas.Children.Add(rect);
-
-            if (cells[i][j].isAWall) {                              //sciana
-                rect = new Rectangle {
-                    Width = step - 4,
-                    Height = step - 4,
-                    Fill = Brushes.DarkGray
-                };
-
-                Canvas.SetLeft(rect, i * step + offsetX + 2);
-                Canvas.SetTop(rect, j * step + offsetY + 2);
+            };
+            if (obst.IsChecked == true || people.IsChecked == true || door.IsChecked == true || clear) {
+                Canvas.SetLeft(rect, i * step + offsetX + 1);
+                Canvas.SetTop(rect, j * step + offsetY + 1);
                 canvas.Children.Add(rect);
 
-            } else if (cells[i][j].isAPerson) {                      //ludź
-                Ellipse ellipse = new Ellipse {
-                    Width = step - 4,
-                    Height = step - 4,
-                    Stroke = Brushes.Black,
-                    StrokeThickness = 2
-                };
+                if (cells[i][j].isAWall) {                              //sciana
+                    rect = new Rectangle {
+                        Width = step - 4,
+                        Height = step - 4,
+                        Fill = Brushes.DarkGray
+                    };
 
-                Canvas.SetLeft(ellipse, i * step + offsetX + 2);
-                Canvas.SetTop(ellipse, j * step + offsetY + 2);
-                canvas.Children.Add(ellipse);
+                    Canvas.SetLeft(rect, i * step + offsetX + 2);
+                    Canvas.SetTop(rect, j * step + offsetY + 2);
+                    canvas.Children.Add(rect);
 
-            } else if (cells[i][j].isADoor) {                       //drzwi
-                rect = new Rectangle {
-                    Width = step - 4,
-                    Height = step - 4,
-                    Fill = Brushes.Red
-                };
+                } else if (cells[i][j].isAPerson) {                      //ludź
+                    Ellipse ellipse = new Ellipse {
+                        Width = step - 4,
+                        Height = step - 4,
+                        Stroke = Brushes.Black,
+                        StrokeThickness = 2
+                    };
 
-                Canvas.SetLeft(rect, i * step + offsetX + 2);
-                Canvas.SetTop(rect, j * step + offsetY + 2);
-                canvas.Children.Add(rect);
+                    Canvas.SetLeft(ellipse, i * step + offsetX + 2);
+                    Canvas.SetTop(ellipse, j * step + offsetY + 2);
+                    canvas.Children.Add(ellipse);
+
+                } else if (cells[i][j].isADoor) {                       //drzwi
+                    rect = new Rectangle {
+                        Width = step - 4,
+                        Height = step - 4,
+                        Fill = Brushes.Red
+                    };
+
+                    Canvas.SetLeft(rect, i * step + offsetX + 2);
+                    Canvas.SetTop(rect, j * step + offsetY + 2);
+                    canvas.Children.Add(rect);
+                }
             }
         }
 
@@ -114,6 +115,7 @@ namespace Ha {
             evacuateHoomansBtn.IsEnabled = false;
             evacuateHoomansNTimesBtn.IsEnabled = false;
             multiplePanicParametersButton.IsEnabled = false;
+            widerDoorButton.IsEnabled = false;
             canvas.Children.Clear();
 
             if (CheckConvertion(rowTb.Text,true) && CheckConvertion(colTb.Text,true) == true) {
@@ -162,8 +164,8 @@ namespace Ha {
                 cells[cols - 1][j].isADoor = false;
                 cells[cols - 1][j].isAWall = true;
 
-                DrawSomething(0, j);
-                DrawSomething(cols - 1, j);
+                DrawSomething(0, j, true);
+                DrawSomething(cols - 1, j, true);
             }
 
             for (int k = 0; k < cols; k++) {        //gorny i dolny brzeg
@@ -175,8 +177,8 @@ namespace Ha {
                 cells[k][rows - 1].isADoor = false;
                 cells[k][rows - 1].isAWall = true;
 
-                DrawSomething(k, 0);
-                DrawSomething(k, rows - 1);
+                DrawSomething(k, 0, true);
+                DrawSomething(k, rows - 1, true);
             }
         }
 
@@ -212,7 +214,7 @@ namespace Ha {
                             cells[c][r].isAWall = false;
                         }
                     }
-                    DrawSomething(c, r);
+                    DrawSomething(c, r, false);
                 }
 
                 if ((startPoint.X > offsetX && startPoint.X < offsetX + cols * step && startPoint.Y > offsetY && startPoint.Y < offsetY + rows * step)
@@ -234,7 +236,7 @@ namespace Ha {
                             cells[c][r].isADoor = true;
                             cells[c][r].isAWall = false;
                         }
-                        DrawSomething(c, r);
+                        DrawSomething(c, r, false);
                     }
                 }
             }

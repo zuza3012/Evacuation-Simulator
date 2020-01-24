@@ -18,7 +18,7 @@ namespace Ha {
         void evacuationWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             for (int i = 1; i < cols - 1; i++) {
                 for (int j = 1; j < rows - 1; j++) {
-                    DrawSomething(i, j);
+                    DrawSomething(i, j, true);
                     DrawLabel(i, j);
                 }
             }
@@ -31,7 +31,7 @@ namespace Ha {
             System.Threading.Thread.Sleep(500);
             for (int i = 1; i < cols - 1; i++) {                //wracamy do ulozenia poczatkowego
                 for (int j = 1; j < rows - 1; j++) {
-                    DrawSomething(i, j);
+                    DrawSomething(i, j, true);
                     DrawLabel(i, j);
                 }
             }
