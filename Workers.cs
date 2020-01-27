@@ -70,8 +70,6 @@ namespace Ha {
             }
         }
 
-
-
         void panicEvacuationWorker_DoWork(object sender, DoWorkEventArgs e) {
             int k = (int)(1 / panicStep);
             data = new double[2, k];
@@ -83,7 +81,7 @@ namespace Ha {
                     for (int i = 0; i < numberOfEvacuations; i++) {
                         Cell[][] copyCells = Cell.DeepCopy(cells);
                         sum += EvacuationCalc(false, copyCells, panicParameter);
-                        calcWorker.ReportProgress((int)(100 * (double)j / k) + i);
+                        calcWorker.ReportProgress((int)(100 * ((double)j / k) + (double)i/numberOfEvacuations));
                     }
                     data[1, j] = sum / numberOfEvacuations;
                     data[0, j] = panicParameter;
@@ -127,7 +125,7 @@ namespace Ha {
                     if (!pop.cancel) {
                         Cell[][] copyOfCopy = Cell.DeepCopy(copy);
                         sum += EvacuationCalc(false, copyOfCopy, panicParameter);
-                        calcWorker.ReportProgress((int)(100 * (double)counter / l + k));
+                        calcWorker.ReportProgress((int)(100 * (double)counter / l + (double)k/numberOfEvacuations));
                     } else {
                         calcWorker.CancelAsync();
                         pop.cancel = false;
