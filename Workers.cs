@@ -139,6 +139,8 @@ namespace Ha {
             calcWorker.ReportProgress(100);
         }
 
+
+
         private void widerDoor_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             pop.Hide();
             if (pop.cancel) {
