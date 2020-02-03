@@ -53,8 +53,14 @@ namespace Ha {
 
         private void SaveGraph_Click(object sender, RoutedEventArgs e) {
             System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                ControlToBmp(chart1, 900, 900).Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+            dialog.Filter = "image files (*.png)|*.png|All files (*.*)|*.*";
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {          
+                if (dialog.FilterIndex == 1)
+                    ControlToBmp(chart1, 900, 900).Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                else if (dialog.FilterIndex == 2)
+                    ControlToBmp(chart1, 900, 900).Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                else
+                    MessageBox.Show("File Save Error.");
             }
         }
 
