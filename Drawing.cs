@@ -12,8 +12,8 @@ namespace Ha {
     public partial class MainWindow : Window {
 
         private void DrawLines() {
-            for (int i = 0; i < cols + 1; i++) {    //rysowanie linii pionowych
-                Line lineX = new Line {
+            for (int i = 0; i < cols + 1; i++) {     //rysowanie linii pionowych
+                Line lineX = new Line { 
                     Stroke = Brushes.Black,
 
                     X1 = i * step + offsetX,
