@@ -7,7 +7,7 @@ We define 3 different type of cells:
 2) door cells - represent room's exit
 3) walls - behave as obstacles, cannot be occupied by pedestrians
 
-STATIC FLOOR FIELD
+STATIC FLOOR FIELD:
 In order to generate floor field we assign exit cells with value 0, walls as 500. Horizontal and vertical neighbours 
 of a cell with a floor fied value v are assigned with value v + 1. Diagonal neighbours are assigned wih value v + 1.5.
 If the above procedure results in conflict and two cells try to assign a different value to the same neighbouring cell,
